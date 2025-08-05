@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="diary-service" />
+        <module name="common" />
+        <module name="gateway-service" />
+        <module name="emotion-service" />
+        <module name="capsule-service" />
+        <module name="anonymous-service" />
+        <module name="consultation-service" />
+        <module name="quote-service" />
+        <module name="user-service" />
+        <module name="file-service" />
+        <module name="mysterybox-service" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="ai-service" target="17" />
+      <module name="shop-service" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

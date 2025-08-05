@@ -1,0 +1,15 @@
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/user-service/src/main/java/com/dailybaro/user/controller/LoginController.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/user-service/src/main/java/com/dailybaro/user/UserApplication.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/user-service/src/main/java/com/dailybaro/user/service/UserService.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/user-service/src/main/java/com/dailybaro/user/model/dto/UserRegisterDTO.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/user-service/src/main/java/com/dailybaro/user/model/dto/UpdatePwdDTO.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/user-service/src/main/java/com/dailybaro/user/model/User.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/user-service/src/main/java/com/dailybaro/user/controller/TestController.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/user-service/src/main/java/com/dailybaro/user/model/vo/UserInfoVO.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/user-service/src/main/java/com/dailybaro/user/config/SecurityConfig.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/user-service/src/main/java/com/dailybaro/user/service/impl/UserServiceImpl.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/user-service/src/main/java/com/dailybaro/user/model/dto/WxLoginDTO.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/user-service/src/main/java/com/dailybaro/user/model/dto/UserPwDTO.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/user-service/src/main/java/com/dailybaro/user/util/Result.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/user-service/src/main/java/com/dailybaro/user/controller/UsersController.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/user-service/src/main/java/com/dailybaro/user/mapper/UserMapper.java
