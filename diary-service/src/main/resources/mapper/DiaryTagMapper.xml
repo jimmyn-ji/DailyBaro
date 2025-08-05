@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.project.mapper.DiaryTagMapper">
+<mapper namespace="com.dailybaro.diary.mapper.DiaryTagMapper">
     <select id="findDiaryIdsByTagNames" resultType="java.lang.Long">
         SELECT DISTINCT dt.diary_id
         FROM diary_tags dt
@@ -10,6 +10,7 @@
             #{tagName}
         </foreach>
     </select>
+    
     <select id="findDiaryIdsByTagIds" resultType="java.lang.Long">
         SELECT DISTINCT dt.diary_id
         FROM diary_tags dt
@@ -18,4 +19,15 @@
             #{tagId}
         </foreach>
     </select>
+    
+    <delete id="deleteByDiaryId">
+        DELETE FROM diary_tags WHERE diary_id = #{diaryId}
+    </delete>
+    
+    <insert id="batchInsert" parameterType="java.util.List">
+        INSERT INTO diary_tags (diary_id, tag_id) VALUES
+        <foreach collection="diaryTags" item="diaryTag" separator=",">
+            (#{diaryTag.diaryId}, #{diaryTag.tagId})
+        </foreach>
+    </insert>
 </mapper> 

@@ -1,1 +1,49 @@
- 
+spring:
+  application:
+    name: gateway-service
+  main:
+    web-application-type: reactive
+  # 禁用 Netty DNS 原生库，解决 macOS 兼容性问题
+  netty:
+    resolver-dns:
+      native: false
+  cloud:
+    gateway:
+      routes:
+        - id: diary-service
+          uri: http://localhost:8002
+          predicates:
+            - Path=/api/diary/**
+        - id: user-service-api
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/user/**
+        - id: user-service-login
+          uri: http://localhost:8081
+          predicates:
+            - Path=/login/**
+        - id: user-service-test
+          uri: http://localhost:8081
+          predicates:
+            - Path=/test/**
+        - id: user-service-users
+          uri: http://localhost:8081
+          predicates:
+            - Path=/users/**
+        - id: diary-service-uploads
+          uri: http://localhost:8002
+          predicates:
+            - Path=/uploads/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: '*'
+            allowedMethods: '*'
+            allowedHeaders: '*'
+            allowCredentials: false
+    nacos:
+      discovery:
+        enabled: false
+
+server:
+  port: 8000 

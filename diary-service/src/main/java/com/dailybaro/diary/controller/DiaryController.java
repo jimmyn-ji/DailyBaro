@@ -1,5 +1,6 @@
 package com.dailybaro.diary.controller;
 
+import com.dailybaro.diary.model.Tag;
 import com.dailybaro.diary.model.dto.CreateDiaryDTO;
 import com.dailybaro.diary.model.dto.QueryDiaryDTO;
 import com.dailybaro.diary.model.dto.UpdateDiaryDTO;
@@ -65,6 +66,15 @@ public class DiaryController {
             return Result.fail("用户未登录");
         }
         return diaryService.findDiaries(queryDiaryDTO, userId);
+    }
+    
+    @GetMapping("/tags")
+    public Result<List<Tag>> getUserTags(HttpServletRequest request) {
+        Long userId = getUserIdFromRequest(request);
+        if (userId == null) {
+            return Result.fail("用户未登录");
+        }
+        return diaryService.getUserTags(userId);
     }
     
     /**

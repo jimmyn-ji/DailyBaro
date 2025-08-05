@@ -1,4 +1,5 @@
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/diary-service/src/main/java/com/dailybaro/diary/model/Tag.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/diary-service/src/main/java/com/dailybaro/diary/config/WebConfig.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/diary-service/src/main/java/com/dailybaro/diary/model/dto/UpdateDiaryDTO.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/diary-service/src/main/java/com/dailybaro/diary/controller/DiaryController.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/diary-service/src/main/java/com/dailybaro/diary/model/dto/CreateDiaryDTO.java
@@ -6,6 +7,7 @@
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/diary-service/src/main/java/com/dailybaro/diary/model/Diary.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/diary-service/src/main/java/com/dailybaro/diary/model/dto/QueryDiaryDTO.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/diary-service/src/main/java/com/dailybaro/diary/service/DiaryService.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/diary-service/src/main/java/com/dailybaro/diary/config/SecurityConfig.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/diary-service/src/main/java/com/dailybaro/diary/model/vo/DiaryVO.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/diary-service/src/main/java/com/dailybaro/diary/mapper/DiaryTagMapper.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/diary-service/src/main/java/com/dailybaro/diary/DiaryApplication.java

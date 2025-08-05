@@ -1,5 +1,6 @@
 package com.dailybaro.diary.service;
 
+import com.dailybaro.diary.model.Tag;
 import com.dailybaro.diary.model.dto.CreateDiaryDTO;
 import com.dailybaro.diary.model.dto.QueryDiaryDTO;
 import com.dailybaro.diary.model.dto.UpdateDiaryDTO;
@@ -20,4 +21,6 @@ public interface DiaryService {
     Result<List<DiaryVO>> findDiaries(QueryDiaryDTO queryDiaryDTO, Long userId);
 
     Result<Void> deleteDiaryMedia(Long mediaId);
+    
+    Result<List<Tag>> getUserTags(Long userId);
 } 

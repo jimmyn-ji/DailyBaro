@@ -1,4 +1,4 @@
-package com.dailybaro.diary.service.Impl;
+package com.dailybaro.diary.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dailybaro.diary.mapper.DiaryMapper;
@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -102,6 +103,7 @@ public class DiaryServiceImpl implements DiaryService {
         if (CollectionUtils.isEmpty(tagNames)) {
             return;
         }
+        
         for (String tagName : tagNames) {
             // Find if tag exists for the user
             QueryWrapper<Tag> queryWrapper = new QueryWrapper<>();
@@ -116,11 +118,21 @@ public class DiaryServiceImpl implements DiaryService {
                 tagMapper.insert(tag);
             }
 
-            // Associate tag with diary
-            DiaryTag diaryTag = new DiaryTag();
-            diaryTag.setDiaryId(diaryId);
-            diaryTag.setTagId(tag.getTagId());
-            diaryTagMapper.insert(diaryTag);
+            // Check if diary-tag association already exists
+            QueryWrapper<DiaryTag> diaryTagQuery = new QueryWrapper<>();
+            diaryTagQuery.eq("diary_id", diaryId).eq("tag_id", tag.getTagId());
+            DiaryTag existingDiaryTag = diaryTagMapper.selectOne(diaryTagQuery);
+            
+            // Only insert if not exists
+            if (existingDiaryTag == null) {
+                DiaryTag diaryTag = new DiaryTag();
+                diaryTag.setDiaryId(diaryId);
+                diaryTag.setTagId(tag.getTagId());
+                diaryTagMapper.insert(diaryTag);
+                log.info("Added tag '{}' to diary {}", tagName, diaryId);
+            } else {
+                log.info("Tag '{}' already exists for diary {}", tagName, diaryId);
+            }
         }
     }
 
@@ -153,9 +165,7 @@ public class DiaryServiceImpl implements DiaryService {
         diaryMapper.updateById(diary);
 
         // 2. 处理标签
-        QueryWrapper<DiaryTag> tagDelQuery = new QueryWrapper<>();
-        tagDelQuery.eq("diary_id", diary.getDiaryId());
-        diaryTagMapper.delete(tagDelQuery);
+        diaryTagMapper.deleteByDiaryId(diary.getDiaryId());
         handleTags(updateDiaryDTO.getTags(), diary.getDiaryId(), diary.getUserId());
 
         // 3. 处理媒体
@@ -192,12 +202,18 @@ public class DiaryServiceImpl implements DiaryService {
         if (diary == null) {
             return Result.fail("日记不存在");
         }
+        // 删除媒体文件
         QueryWrapper<DiaryMedia> mediaQuery = new QueryWrapper<>();
         mediaQuery.eq("diary_id", diaryId);
         List<DiaryMedia> mediaList = diaryMediaMapper.selectList(mediaQuery);
         for (DiaryMedia media : mediaList) {
             deletePhysicalFile(media.getMediaUrl());
         }
+        
+        // 删除标签关联
+        diaryTagMapper.deleteByDiaryId(diaryId);
+        
+        // 删除日记
         diaryMapper.deleteById(diaryId);
         return Result.success();
     }
@@ -235,14 +251,9 @@ public class DiaryServiceImpl implements DiaryService {
         }
 
         // Fetch associated tags
-        QueryWrapper<DiaryTag> diaryTagQuery = new QueryWrapper<>();
-        diaryTagQuery.eq("diary_id", diaryId);
-        List<DiaryTag> diaryTags = diaryTagMapper.selectList(diaryTagQuery);
-        List<String> tagNames = Collections.emptyList();
-        if (!CollectionUtils.isEmpty(diaryTags)) {
-            List<Long> tagIds = diaryTags.stream().map(DiaryTag::getTagId).collect(Collectors.toList());
-            List<Tag> tags = tagMapper.selectBatchIds(tagIds);
-            tagNames = tags.stream().map(Tag::getTagName).collect(Collectors.toList());
+        List<String> tagNames = diaryMapper.findTagsByDiaryId(diaryId);
+        if (tagNames == null) {
+            tagNames = Collections.emptyList();
         }
 
         // Fetch associated media
@@ -256,18 +267,8 @@ public class DiaryServiceImpl implements DiaryService {
         }).collect(Collectors.toList());
 
 
-        // 获取用户账号信息
+        // 暂时不获取用户账号信息，避免 Feign 调用错误
         String userAccount = null;
-        try {
-            Result<Object> userResult = userServiceClient.getUserById(diary.getUserId());
-            if (userResult.getCode() == 200 && userResult.getData() != null) {
-                // 这里需要根据实际的用户数据结构来获取账号
-                // 暂时设置为 null，后续可以通过 OpenFeign 获取
-                userAccount = null;
-            }
-        } catch (Exception e) {
-            log.warn("获取用户账号失败: userId={}", diary.getUserId(), e);
-        }
 
         // Assemble and return VO
         DiaryVO diaryVO = new DiaryVO();
@@ -305,5 +306,11 @@ public class DiaryServiceImpl implements DiaryService {
                 .map(diary -> getDiaryById(diary.getDiaryId()).getData())
                 .collect(Collectors.toList());
         return Result.success(diaryVOs);
+    }
+    
+    @Override
+    public Result<List<Tag>> getUserTags(Long userId) {
+        List<Tag> tags = tagMapper.findByUserId(userId);
+        return Result.success(tags);
     }
 } 
