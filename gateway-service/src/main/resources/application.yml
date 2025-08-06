@@ -34,13 +34,25 @@ spring:
           uri: http://localhost:8002
           predicates:
             - Path=/uploads/**
+        - id: emotion-service
+          uri: http://localhost:8004
+          predicates:
+            - Path=/api/analysis/**
+        - id: consultation-service
+          uri: http://localhost:8005
+          predicates:
+            - Path=/consultation/**
+        - id: anonymous-service
+          uri: http://localhost:8006
+          predicates:
+            - Path=/api/anonymous-posts/**
       globalcors:
         corsConfigurations:
           '[/**]':
-            allowedOrigins: '*'
+            allowedOrigins: "http://localhost:5173"
             allowedMethods: '*'
             allowedHeaders: '*'
-            allowCredentials: false
+            allowCredentials: true
     nacos:
       discovery:
         enabled: false

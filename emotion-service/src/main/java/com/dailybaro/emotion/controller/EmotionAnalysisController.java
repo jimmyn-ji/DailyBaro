@@ -1,17 +1,12 @@
 package com.dailybaro.emotion.controller;
 
+import com.dailybaro.common.util.Result;
 import com.dailybaro.emotion.model.vo.EmotionDataPointVO;
 import com.dailybaro.emotion.model.vo.EmotionShareVO;
 import com.dailybaro.emotion.service.EmotionAnalysisService;
-import com.dailybaro.emotion.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -24,7 +19,6 @@ public class EmotionAnalysisController {
 
     @Autowired
     private EmotionAnalysisService emotionAnalysisService;
-
 
     @GetMapping("/fluctuation")
     public Result<List<EmotionDataPointVO>> getFluctuation(

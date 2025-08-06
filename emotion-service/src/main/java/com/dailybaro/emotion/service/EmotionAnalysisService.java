@@ -1,8 +1,8 @@
 package com.dailybaro.emotion.service;
 
+import com.dailybaro.common.util.Result;
 import com.dailybaro.emotion.model.vo.EmotionDataPointVO;
 import com.dailybaro.emotion.model.vo.EmotionShareVO;
-import com.dailybaro.emotion.util.Result;
 
 import java.util.Date;
 import java.util.List;
@@ -45,5 +45,4 @@ public interface EmotionAnalysisService {
      * @return AI分析点列表
      */
     Result<List<String>> getAIAnalysisPoints(Map<String, Object> emotionData);
-
 } 
