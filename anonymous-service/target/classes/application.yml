@@ -1,5 +1,6 @@
 server:
   port: 8006
+
 spring:
   application:
     name: anonymous-service
@@ -20,6 +21,7 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
@@ -29,6 +31,7 @@ mybatis-plus:
       logic-delete-field: deleted
       logic-delete-value: 1
       logic-not-delete-value: 0
+
 logging:
   level:
     com.dailybaro.anonymous: debug
