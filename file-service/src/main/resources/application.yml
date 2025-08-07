@@ -21,7 +21,7 @@ spring:
       - org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration
 
 file:
-  upload-dir: ./uploads
+  upload-dir: /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/file-service/uploads
 
 logging:
   level:
