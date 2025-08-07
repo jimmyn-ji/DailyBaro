@@ -1,0 +1,6 @@
+com/dailybaro/consultation/service/impl/ConsultationInfoServiceImpl.class
+com/dailybaro/consultation/service/ConsultationInfoService.class
+com/dailybaro/consultation/mapper/ConsultationInfoMapper.class
+com/dailybaro/consultation/controller/ConsultationInfoController.class
+com/dailybaro/consultation/ConsultationApplication.class
+com/dailybaro/consultation/model/ConsultationInfo.class

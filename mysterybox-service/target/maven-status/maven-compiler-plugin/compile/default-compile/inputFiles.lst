@@ -1,1 +1,11 @@
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/mysterybox-service/src/main/java/com/dailybaro/mysterybox/model/vo/MysteryBoxVO.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/mysterybox-service/src/main/java/com/dailybaro/mysterybox/MysteryBoxApplication.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/mysterybox-service/src/main/java/com/dailybaro/mysterybox/controller/MysteryBoxController.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/mysterybox-service/src/main/java/com/dailybaro/mysterybox/model/MysteryBoxItem.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/mysterybox-service/src/main/java/com/dailybaro/mysterybox/mapper/UserDrawnBoxMapper.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/mysterybox-service/src/main/java/com/dailybaro/mysterybox/service/impl/MysteryBoxServiceImpl.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/mysterybox-service/src/main/java/com/dailybaro/mysterybox/mapper/MysteryBoxItemMapper.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/mysterybox-service/src/main/java/com/dailybaro/mysterybox/model/UserDrawnBox.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/mysterybox-service/src/main/java/com/dailybaro/mysterybox/service/MysteryBoxService.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/mysterybox-service/src/main/java/com/dailybaro/mysterybox/model/User.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/mysterybox-service/src/main/java/com/dailybaro/mysterybox/mapper/UserMapper.java

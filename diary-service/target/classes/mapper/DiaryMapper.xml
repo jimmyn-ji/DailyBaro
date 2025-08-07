@@ -16,5 +16,16 @@
         JOIN tags t ON dt.tag_id = t.tag_id
         WHERE dt.diary_id = #{diaryId}
     </select>
+    <select id="findByUserIdAndDateRange" resultType="com.dailybaro.diary.model.Diary">
+        SELECT * FROM diaries
+        WHERE user_id = #{userId}
+        AND create_time BETWEEN #{startDate} AND #{endDate}
+    </select>
+    <select id="findEmotionsByUserIdAndDateRange" resultType="java.lang.String">
+        SELECT emotion FROM diaries
+        WHERE user_id = #{userId}
+        AND create_time BETWEEN #{startDate} AND #{endDate}
+        AND emotion IS NOT NULL
+    </select>
 
 </mapper> 

@@ -1,4 +1,4 @@
-package com.project.model.dto;
+package com.dailybaro.common.dto;
 
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;

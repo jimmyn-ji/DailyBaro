@@ -19,6 +19,10 @@ spring:
           uri: http://localhost:8002
           predicates:
             - Path=/uploads/**
+        - id: diary-service-tag
+          uri: http://localhost:8002
+          predicates:
+            - Path=/api/tag/**
         
         # 用户服务
         - id: user-service-api

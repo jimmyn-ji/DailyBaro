@@ -1,3 +1,12 @@
-com/dailybaro/quote/util/Result.class
-com/dailybaro/quote/QuoteApplication.class
+com/dailybaro/quote/model/UserDailyQuote.class
+com/dailybaro/quote/service/impl/UserDailyQuoteServiceImpl.class
 com/dailybaro/quote/controller/QuoteController.class
+com/dailybaro/quote/service/impl/DailyQuoteServiceImpl.class
+com/dailybaro/quote/util/Result.class
+com/dailybaro/quote/service/DailyQuoteService.class
+com/dailybaro/quote/service/UserDailyQuoteService.class
+com/dailybaro/quote/QuoteApplication.class
+com/dailybaro/quote/model/DailyQuote.class
+com/dailybaro/quote/controller/DailyQuoteController.class
+com/dailybaro/quote/mapper/UserDailyQuoteMapper.class
+com/dailybaro/quote/mapper/DailyQuoteMapper.class

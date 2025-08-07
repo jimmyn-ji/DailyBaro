@@ -9,6 +9,7 @@ com/dailybaro/diary/service/UserServiceClient.class
 com/dailybaro/diary/mapper/DiaryMapper.class
 com/dailybaro/diary/service/impl/FileStorageServiceImpl.class
 com/dailybaro/diary/service/impl/DiaryServiceImpl.class
+com/dailybaro/diary/controller/TagController.class
 com/dailybaro/diary/mapper/DiaryMediaMapper.class
 com/dailybaro/diary/model/DiaryTag.class
 com/dailybaro/diary/model/dto/UpdateDiaryDTO.class

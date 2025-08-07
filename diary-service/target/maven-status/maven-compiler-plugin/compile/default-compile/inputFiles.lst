@@ -2,6 +2,7 @@
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/diary-service/src/main/java/com/dailybaro/diary/config/WebConfig.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/diary-service/src/main/java/com/dailybaro/diary/model/dto/UpdateDiaryDTO.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/diary-service/src/main/java/com/dailybaro/diary/controller/DiaryController.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/diary-service/src/main/java/com/dailybaro/diary/controller/TagController.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/diary-service/src/main/java/com/dailybaro/diary/model/dto/CreateDiaryDTO.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/diary-service/src/main/java/com/dailybaro/diary/mapper/TagMapper.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/diary-service/src/main/java/com/dailybaro/diary/model/Diary.java

@@ -1,1 +1,2 @@
 com/dailybaro/gateway/GatewayApplication.class
+com/dailybaro/gateway/config/CorsGlobalConfig.class

@@ -17,4 +17,5 @@ public class DiaryVO {
     private List<String> tags; // List of tag names
     private List<Long> tagIds; // 新增，标签id数组
     private List<MediaVO> media; // List of media objects
+    private String emotion; // 情绪类型
 } 

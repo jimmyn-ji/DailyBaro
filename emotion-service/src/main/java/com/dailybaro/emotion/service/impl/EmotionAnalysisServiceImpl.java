@@ -7,11 +7,20 @@ import com.dailybaro.emotion.service.EmotionAnalysisService;
 import com.dailybaro.common.util.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+@FeignClient(name = "diary-service", url = "http://localhost:8002")
+interface DiaryFeignClient {
+    @GetMapping("/api/diary/user-emotions")
+    List<Map<String, Object>> getUserEmotions(@RequestParam("userId") Long userId, @RequestParam("startDate") String startDate, @RequestParam("endDate") String endDate);
+}
 
 @Slf4j
 @Service
@@ -31,6 +40,9 @@ public class EmotionAnalysisServiceImpl implements EmotionAnalysisService {
         EMOTION_MAP.put("焦虑", -0.9);
         EMOTION_MAP.put("愤怒", -1.0);
     }
+
+    @Autowired
+    private DiaryFeignClient diaryFeignClient;
 
     @Override
     public Result<List<EmotionDataPointVO>> getEmotionFluctuation(Long userId, Date startDate, Date endDate) {
@@ -93,25 +105,14 @@ public class EmotionAnalysisServiceImpl implements EmotionAnalysisService {
 
     @Override
     public Result<List<Map<String, Object>>> getEmotionFluctuationMulti(Long userId, Date startDate, Date endDate) {
-        // 简化版本，返回模拟数据
-        List<Map<String, Object>> multiData = new ArrayList<>();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(startDate);
-        while (!cal.getTime().after(endDate)) {
-            Map<String, Object> dayData = new HashMap<>();
-            dayData.put("date", new java.sql.Date(cal.getTime().getTime()));
-            dayData.put("开心", Math.random() * 0.8);
-            dayData.put("激动", Math.random() * 0.6);
-            dayData.put("平静", Math.random() * 0.5);
-            dayData.put("无聊", Math.random() * 0.4);
-            dayData.put("疲惫", Math.random() * 0.6);
-            dayData.put("难过", Math.random() * 0.8);
-            dayData.put("焦虑", Math.random() * 0.9);
-            dayData.put("愤怒", Math.random() * 1.0);
-            multiData.add(dayData);
-            cal.add(Calendar.DATE, 1);
-        }
+        // 调用 diary-service 获取真实情绪数据
+        List<Map<String, Object>> multiData = diaryFeignClient.getUserEmotions(userId, formatDate(startDate), formatDate(endDate));
         return Result.success(multiData);
+    }
+
+    private String formatDate(Date date) {
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(date);
     }
 
     @Override

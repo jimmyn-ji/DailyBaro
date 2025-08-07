@@ -12,4 +12,6 @@ import java.util.List;
 public interface DiaryMapper extends BaseMapper<Diary> {
     List<String> findTagsByUserIdAndDateRange(@Param("userId") Long userId, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
     List<String> findTagsByDiaryId(@Param("diaryId") Long diaryId);
+    List<Diary> findByUserIdAndDateRange(@Param("userId") Long userId, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+    List<String> findEmotionsByUserIdAndDateRange(@Param("userId") Long userId, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 } 

@@ -22,8 +22,8 @@ spring:
     password: 123456
   servlet:
     multipart:
-      max-file-size: 20MB
-      max-request-size: 20MB
+      max-file-size: 50MB
+      max-request-size: 50MB
 
 mybatis-plus:
   configuration:
