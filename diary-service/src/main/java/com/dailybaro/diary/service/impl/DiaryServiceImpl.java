@@ -105,15 +105,14 @@ public class DiaryServiceImpl implements DiaryService {
         }
         
         for (String tagName : tagNames) {
-            // Find if tag exists for the user
+            // 根据标签名全局唯一判断是否存在
             QueryWrapper<Tag> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("user_id", userId).eq("tag_name", tagName);
+            queryWrapper.eq("tag_name", tagName);
             Tag tag = tagMapper.selectOne(queryWrapper);
 
-            // If not, create it
+            // 不存在则创建
             if (tag == null) {
                 tag = new Tag();
-                tag.setUserId(userId);
                 tag.setTagName(tagName);
                 tagMapper.insert(tag);
             }
@@ -310,7 +309,7 @@ public class DiaryServiceImpl implements DiaryService {
     
     @Override
     public Result<List<Tag>> getUserTags(Long userId) {
-        List<Tag> tags = tagMapper.findByUserId(userId);
+        List<Tag> tags = tagMapper.findAll();
         return Result.success(tags);
     }
 } 

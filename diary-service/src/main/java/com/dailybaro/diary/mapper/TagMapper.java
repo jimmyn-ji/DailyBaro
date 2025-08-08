@@ -9,5 +9,5 @@ import java.util.List;
 
 @Mapper
 public interface TagMapper extends BaseMapper<Tag> {
-    List<Tag> findByUserId(@Param("userId") Long userId);
+    List<Tag> findAll();
 } 

@@ -43,16 +43,25 @@ public class FileStorageServiceImpl implements FileStorageService {
         String originalFilename = file.getOriginalFilename();
         String lowerFileName = originalFilename != null ? originalFilename.toLowerCase() : "";
         
+        // 添加调试日志
+        System.out.println("File upload debug - contentType: " + contentType + ", originalFilename: " + originalFilename);
+        
         boolean isValidType =
             SUPPORTED_IMAGE_TYPES.contains(contentType) ||
             SUPPORTED_AUDIO_TYPES.contains(contentType) ||
             SUPPORTED_VIDEO_TYPES.contains(contentType) ||
             lowerFileName.endsWith(".ncm") ||
             lowerFileName.endsWith(".m4a") ||
-            lowerFileName.endsWith(".aac");
+            lowerFileName.endsWith(".aac") ||
+            lowerFileName.endsWith(".mp3") ||  // 添加更多扩展名支持
+            lowerFileName.endsWith(".mp4") ||
+            lowerFileName.endsWith(".jpg") ||
+            lowerFileName.endsWith(".jpeg") ||
+            lowerFileName.endsWith(".png");
 
         if (!isValidType) {
-            return Result.fail("不支持的文件类型: " + (originalFilename != null ? originalFilename : "未知文件"));
+            return Result.fail("不支持的文件类型: " + (originalFilename != null ? originalFilename : "未知文件") + 
+                             ", contentType: " + contentType + ", lowerFileName: " + lowerFileName);
         }
 
         try {

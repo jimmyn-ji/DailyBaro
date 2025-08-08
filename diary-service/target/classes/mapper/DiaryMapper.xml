@@ -21,11 +21,5 @@
         WHERE user_id = #{userId}
         AND create_time BETWEEN #{startDate} AND #{endDate}
     </select>
-    <select id="findEmotionsByUserIdAndDateRange" resultType="java.lang.String">
-        SELECT emotion FROM diaries
-        WHERE user_id = #{userId}
-        AND create_time BETWEEN #{startDate} AND #{endDate}
-        AND emotion IS NOT NULL
-    </select>
 
 </mapper> 

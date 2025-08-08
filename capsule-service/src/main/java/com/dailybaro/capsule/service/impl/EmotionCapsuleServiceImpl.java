@@ -17,6 +17,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 
 import java.util.Date;
 import java.util.List;
@@ -31,6 +42,9 @@ public class EmotionCapsuleServiceImpl implements EmotionCapsuleService {
 
     @Autowired
     private CapsuleMediaMapper mediaMapper;
+
+    // 文件服务地址（本地开发环境）
+    private static final String FILE_SERVICE_UPLOAD_URL = "http://localhost:8003/uploads/media";
 
     @Override
     @Transactional
@@ -56,15 +70,23 @@ public class EmotionCapsuleServiceImpl implements EmotionCapsuleService {
 
         capsuleMapper.insert(capsule);
 
-        // Handle media files (simplified version)
+        // 上传到文件服务并保存返回的 UUID 路径
         if (!CollectionUtils.isEmpty(createDTO.getMediaFiles())) {
             for (MultipartFile file : createDTO.getMediaFiles()) {
-                // 简化处理，只保存文件信息
-                CapsuleMedia media = new CapsuleMedia();
-                media.setCapsuleId(capsule.getCapsuleId());
-                media.setMediaUrl("/uploads/" + file.getOriginalFilename());
-                media.setMediaType("file");
-                mediaMapper.insert(media);
+                try {
+                    String fileUrl = uploadToFileService(file);
+                    if (fileUrl == null || fileUrl.isEmpty()) {
+                        log.warn("文件服务未返回有效URL，跳过该文件: {}", file.getOriginalFilename());
+                        continue;
+                    }
+                    CapsuleMedia media = new CapsuleMedia();
+                    media.setCapsuleId(capsule.getCapsuleId());
+                    media.setMediaUrl(fileUrl);
+                    media.setMediaType(resolveMediaType(file));
+                    mediaMapper.insert(media);
+                } catch (Exception ex) {
+                    log.error("上传媒体到文件服务失败: {}", file.getOriginalFilename(), ex);
+                }
             }
         }
         return getCapsuleById(capsule.getCapsuleId(), userId);
@@ -166,5 +188,49 @@ public class EmotionCapsuleServiceImpl implements EmotionCapsuleService {
         }).collect(Collectors.toList()));
 
         return vo;
+    }
+
+    private String resolveMediaType(MultipartFile file) {
+        try {
+            String contentType = file.getContentType();
+            if (contentType == null) return "file";
+            if (contentType.startsWith("image")) return "image";
+            if (contentType.startsWith("video")) return "video";
+            if (contentType.startsWith("audio")) return "audio";
+        } catch (Exception ignored) {}
+        return "file";
+    }
+
+    private String uploadToFileService(MultipartFile file) throws Exception {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        Resource fileResource = new ByteArrayResource(file.getBytes()) {
+            @Override
+            public String getFilename() {
+                return file.getOriginalFilename();
+            }
+        };
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("file", fileResource);
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(FILE_SERVICE_UPLOAD_URL, requestEntity, String.class);
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+            log.warn("文件服务返回失败状态: {}", response.getStatusCode());
+            return null;
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(response.getBody());
+        if (root.has("code") && root.get("code").asInt() == 200 && root.has("data")) {
+            return root.get("data").asText();
+        }
+        log.warn("文件服务返回异常: {}", response.getBody());
+        return null;
     }
 } 

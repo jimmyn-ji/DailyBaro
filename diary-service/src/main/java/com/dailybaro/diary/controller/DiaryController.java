@@ -84,21 +84,21 @@ public class DiaryController {
     public List<Map<String, Object>> getUserEmotions(@RequestParam("userId") Long userId,
                                                      @RequestParam("startDate") String startDate,
                                                      @RequestParam("endDate") String endDate) {
-        // 查询该用户在时间范围内的所有日记
         List<Diary> diaries = diaryMapper.findByUserIdAndDateRange(userId, java.sql.Date.valueOf(startDate), java.sql.Date.valueOf(endDate));
-        // 按天分组统计情绪
-        Map<String, Map<String, Integer>> dayEmotionCount = new TreeMap<>();
+        Map<String, Map<String, Integer>> dayTagCount = new TreeMap<>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         for (Diary d : diaries) {
-            if (d.getEmotion() == null) continue;
             String day = sdf.format(d.getCreateTime());
-            dayEmotionCount.putIfAbsent(day, new HashMap<>());
-            Map<String, Integer> emotionMap = dayEmotionCount.get(day);
-            emotionMap.put(d.getEmotion(), emotionMap.getOrDefault(d.getEmotion(), 0) + 1);
+            List<String> tags = diaryMapper.findTagsByDiaryId(d.getDiaryId());
+            if (tags == null || tags.isEmpty()) continue;
+            dayTagCount.putIfAbsent(day, new HashMap<>());
+            Map<String, Integer> tagMap = dayTagCount.get(day);
+            for (String tag : tags) {
+                tagMap.put(tag, tagMap.getOrDefault(tag, 0) + 1);
+            }
         }
-        // 转换为前端需要的格式
         List<Map<String, Object>> result = new ArrayList<>();
-        for (Map.Entry<String, Map<String, Integer>> entry : dayEmotionCount.entrySet()) {
+        for (Map.Entry<String, Map<String, Integer>> entry : dayTagCount.entrySet()) {
             Map<String, Object> dayData = new HashMap<>();
             dayData.put("date", entry.getKey());
             dayData.putAll(entry.getValue());
@@ -106,6 +106,8 @@ public class DiaryController {
         }
         return result;
     }
+    
+
     
     /**
      * 从请求头中获取用户ID

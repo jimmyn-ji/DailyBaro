@@ -22,8 +22,6 @@ public class Diary {
 
     private String status;
 
-    private String emotion; // 情绪类型
-
     private Date createTime;
 
     private Date updateTime;

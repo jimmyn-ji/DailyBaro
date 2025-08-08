@@ -15,14 +15,20 @@ spring:
           uri: http://localhost:8002
           predicates:
             - Path=/api/diary/**
-        - id: diary-service-uploads
-          uri: http://localhost:8002
-          predicates:
-            - Path=/uploads/**
         - id: diary-service-tag
           uri: http://localhost:8002
           predicates:
             - Path=/api/tag/**
+        
+        # 文件服务 - 处理文件上传和静态资源访问
+        - id: file-service
+          uri: http://localhost:8003
+          predicates:
+            - Path=/api/file/**
+        - id: file-service-uploads
+          uri: http://localhost:8003
+          predicates:
+            - Path=/uploads/**
         
         # 用户服务
         - id: user-service-api
@@ -80,7 +86,7 @@ spring:
         
         # 情绪胶囊服务
         - id: capsule-service
-          uri: http://localhost:8010
+          uri: http://localhost:8011
           predicates:
             - Path=/api/capsules/**
         
