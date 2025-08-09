@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class UserDailyQuoteServiceImpl implements UserDailyQuoteService {
@@ -62,5 +63,44 @@ public class UserDailyQuoteServiceImpl implements UserDailyQuoteService {
         }
         
         return Result.success(existingQuote);
+    }
+
+    @Override
+    public Result<List<UserDailyQuote>> getQuoteHistory(Long userId) {
+        List<UserDailyQuote> quotes = userDailyQuoteMapper.selectList(
+                new QueryWrapper<UserDailyQuote>().eq("user_id", userId)
+                        .orderByDesc("update_time")
+        );
+        return Result.success(quotes);
+    }
+
+    @Override
+    public Result<UserDailyQuote> updateQuote(Long quoteId, Long userId, String content) {
+        UserDailyQuote quote = userDailyQuoteMapper.selectById(quoteId);
+        if (quote == null) {
+            return Result.fail("日签不存在");
+        }
+        if (!quote.getUserId().equals(userId)) {
+            return Result.fail("无权限修改此日签");
+        }
+        
+        quote.setContent(content);
+        quote.setUpdateTime(new Date());
+        userDailyQuoteMapper.updateById(quote);
+        return Result.success(quote);
+    }
+
+    @Override
+    public Result<String> deleteQuote(Long quoteId, Long userId) {
+        UserDailyQuote quote = userDailyQuoteMapper.selectById(quoteId);
+        if (quote == null) {
+            return Result.fail("日签不存在");
+        }
+        if (!quote.getUserId().equals(userId)) {
+            return Result.fail("无权限删除此日签");
+        }
+        
+        userDailyQuoteMapper.deleteById(quoteId);
+        return Result.success("删除成功");
     }
 } 

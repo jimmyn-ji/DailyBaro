@@ -28,10 +28,13 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.io.IOException;
 
 @Slf4j
 @Service
@@ -43,12 +46,33 @@ public class EmotionCapsuleServiceImpl implements EmotionCapsuleService {
     @Autowired
     private CapsuleMediaMapper mediaMapper;
 
-    // 文件服务地址（本地开发环境）
-    private static final String FILE_SERVICE_UPLOAD_URL = "http://localhost:8003/uploads/media";
+    // 文件服务地址（通过网关）
+    private static final String FILE_SERVICE_UPLOAD_URL = "http://localhost:8000/uploads/media";
 
     @Override
     @Transactional
     public Result<EmotionCapsuleVO> createCapsule(CreateCapsuleDTO createDTO, Long userId) {
+        // 添加详细的调试日志
+        log.info("=== 开始创建情绪胶囊 ===");
+        log.info("用户ID: {}", userId);
+        log.info("当前情绪: {}", createDTO.getCurrentEmotion());
+        log.info("想法: {}", createDTO.getThoughts());
+        log.info("未来目标: {}", createDTO.getFutureGoal());
+        log.info("开启时间: {}", createDTO.getOpenTime());
+        log.info("提醒类型: {}", createDTO.getReminderType());
+        
+        // 详细记录媒体文件信息
+        if (createDTO.getMediaFiles() != null) {
+            log.info("媒体文件数量: {}", createDTO.getMediaFiles().size());
+            for (int i = 0; i < createDTO.getMediaFiles().size(); i++) {
+                MultipartFile file = createDTO.getMediaFiles().get(i);
+                log.info("文件 {}: 名称={}, 大小={} bytes, 类型={}", 
+                        i + 1, file.getOriginalFilename(), file.getSize(), file.getContentType());
+            }
+        } else {
+            log.warn("MediaFiles为null");
+        }
+        
         EmotionCapsule capsule = new EmotionCapsule();
         BeanUtils.copyProperties(createDTO, capsule);
         capsule.setUserId(userId);
@@ -69,26 +93,61 @@ public class EmotionCapsuleServiceImpl implements EmotionCapsuleService {
         capsule.setReminderRead(0);
 
         capsuleMapper.insert(capsule);
+        log.info("胶囊创建成功，ID: {}", capsule.getCapsuleId());
 
-        // 上传到文件服务并保存返回的 UUID 路径
+        // 处理媒体文件上传 - 改进异常处理
+        List<String> failedFiles = new ArrayList<>();
+        List<String> successFiles = new ArrayList<>();
+        
         if (!CollectionUtils.isEmpty(createDTO.getMediaFiles())) {
+            log.info("开始处理 {} 个媒体文件", createDTO.getMediaFiles().size());
+            
             for (MultipartFile file : createDTO.getMediaFiles()) {
                 try {
+                    log.info("正在上传文件: {}, 大小: {} bytes, 类型: {}", 
+                            file.getOriginalFilename(), file.getSize(), file.getContentType());
+                    
                     String fileUrl = uploadToFileService(file);
                     if (fileUrl == null || fileUrl.isEmpty()) {
                         log.warn("文件服务未返回有效URL，跳过该文件: {}", file.getOriginalFilename());
+                        failedFiles.add(file.getOriginalFilename());
                         continue;
                     }
+                    
+                    log.info("文件上传成功，URL: {}", fileUrl);
+                    
                     CapsuleMedia media = new CapsuleMedia();
                     media.setCapsuleId(capsule.getCapsuleId());
                     media.setMediaUrl(fileUrl);
                     media.setMediaType(resolveMediaType(file));
-                    mediaMapper.insert(media);
+                    
+                    int insertResult = mediaMapper.insert(media);
+                    if (insertResult > 0) {
+                        log.info("媒体记录保存成功，mediaId: {}", media.getMediaId());
+                        successFiles.add(file.getOriginalFilename());
+                    } else {
+                        log.error("媒体记录保存失败: {}", file.getOriginalFilename());
+                        failedFiles.add(file.getOriginalFilename());
+                    }
                 } catch (Exception ex) {
                     log.error("上传媒体到文件服务失败: {}", file.getOriginalFilename(), ex);
+                    failedFiles.add(file.getOriginalFilename());
+                    // 不抛出异常，继续处理其他文件
                 }
             }
+            
+            // 记录处理结果
+            if (!successFiles.isEmpty()) {
+                log.info("成功上传 {} 个文件: {}", successFiles.size(), String.join(", ", successFiles));
+            }
+            if (!failedFiles.isEmpty()) {
+                log.warn("上传失败 {} 个文件: {}", failedFiles.size(), String.join(", ", failedFiles));
+            }
+        } else {
+            log.info("没有媒体文件需要处理");
         }
+        
+        log.info("=== 情绪胶囊创建完成 ===");
         return getCapsuleById(capsule.getCapsuleId(), userId);
     }
 
@@ -193,21 +252,64 @@ public class EmotionCapsuleServiceImpl implements EmotionCapsuleService {
     private String resolveMediaType(MultipartFile file) {
         try {
             String contentType = file.getContentType();
-            if (contentType == null) return "file";
-            if (contentType.startsWith("image")) return "image";
-            if (contentType.startsWith("video")) return "video";
-            if (contentType.startsWith("audio")) return "audio";
-        } catch (Exception ignored) {}
-        return "file";
+            String fileName = file.getOriginalFilename();
+            
+            // 首先尝试基于Content-Type判断
+            if (contentType != null) {
+                if (contentType.startsWith("image/")) return "image";
+                if (contentType.startsWith("video/")) return "video";
+                if (contentType.startsWith("audio/")) return "audio";
+            }
+            
+            // 如果Content-Type判断失败，基于文件扩展名判断
+            if (fileName != null) {
+                String lowerFileName = fileName.toLowerCase();
+                
+                // 图片类型
+                if (lowerFileName.matches(".*\\.(jpg|jpeg|png|gif|webp|bmp)$")) {
+                    return "image";
+                }
+                
+                // 音频类型
+                if (lowerFileName.matches(".*\\.(mp3|wav|ogg|aac|m4a|ncm)$")) {
+                    return "audio";
+                }
+                
+                // 视频类型
+                if (lowerFileName.matches(".*\\.(mp4|avi|mov|wmv|flv|mkv)$")) {
+                    return "video";
+                }
+            }
+        } catch (Exception e) {
+            log.warn("解析媒体类型失败: {}", e.getMessage());
+        }
+        return "other";
     }
 
-    private String uploadToFileService(MultipartFile file) throws Exception {
+    private String uploadToFileService(MultipartFile file) {
+        log.info("开始调用文件服务上传文件: {}", file.getOriginalFilename());
+        
+        // 先获取文件字节，处理可能的IOException
+        byte[] fileBytes;
+        try {
+            fileBytes = file.getBytes();
+        } catch (IOException e) {
+            log.error("读取文件字节失败: {}", file.getOriginalFilename(), e);
+            return null;
+        }
+        
         RestTemplate restTemplate = new RestTemplate();
+        
+        // 设置超时时间
+        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
+        factory.setConnectTimeout(10000); // 10秒连接超时
+        factory.setReadTimeout(30000);    // 30秒读取超时
+        restTemplate.setRequestFactory(factory);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-        Resource fileResource = new ByteArrayResource(file.getBytes()) {
+        Resource fileResource = new ByteArrayResource(fileBytes) {
             @Override
             public String getFilename() {
                 return file.getOriginalFilename();
@@ -219,18 +321,56 @@ public class EmotionCapsuleServiceImpl implements EmotionCapsuleService {
 
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        ResponseEntity<String> response = restTemplate.postForEntity(FILE_SERVICE_UPLOAD_URL, requestEntity, String.class);
-        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
-            log.warn("文件服务返回失败状态: {}", response.getStatusCode());
+        try {
+            log.info("发送请求到文件服务: {}", FILE_SERVICE_UPLOAD_URL);
+            
+            ResponseEntity<String> response = restTemplate.postForEntity(FILE_SERVICE_UPLOAD_URL, requestEntity, String.class);
+            
+            log.info("文件服务响应状态: {}, 响应体: {}", response.getStatusCode(), response.getBody());
+            
+            if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+                log.warn("文件服务返回失败状态: {}", response.getStatusCode());
+                return null;
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(response.getBody());
+            
+            if (root.has("code") && root.get("code").asInt() == 200 && root.has("data")) {
+                String fileUrl = root.get("data").asText();
+                log.info("文件上传成功，返回URL: {}", fileUrl);
+                return fileUrl;
+            } else {
+                log.warn("文件服务返回异常: {}", response.getBody());
+                return null;
+            }
+        } catch (Exception e) {
+            log.error("调用文件服务失败: {}", e.getMessage(), e);
+            
+            // 如果是连接超时，尝试重试一次
+            if (e.getMessage().contains("timeout") || e.getMessage().contains("Connection refused")) {
+                log.info("检测到超时或连接问题，尝试重试...");
+                try {
+                    Thread.sleep(2000); // 等待2秒后重试
+                    ResponseEntity<String> retryResponse = restTemplate.postForEntity(FILE_SERVICE_UPLOAD_URL, requestEntity, String.class);
+                    
+                    if (retryResponse.getStatusCode().is2xxSuccessful() && retryResponse.getBody() != null) {
+                        ObjectMapper mapper = new ObjectMapper();
+                        JsonNode root = mapper.readTree(retryResponse.getBody());
+                        
+                        if (root.has("code") && root.get("code").asInt() == 200 && root.has("data")) {
+                            String fileUrl = root.get("data").asText();
+                            log.info("重试成功，文件上传成功，返回URL: {}", fileUrl);
+                            return fileUrl;
+                        }
+                    }
+                } catch (Exception retryEx) {
+                    log.error("重试失败: {}", retryEx.getMessage(), retryEx);
+                }
+            }
+            
+            // 不再抛出异常，返回null表示失败
             return null;
         }
-
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode root = mapper.readTree(response.getBody());
-        if (root.has("code") && root.get("code").asInt() == 200 && root.has("data")) {
-            return root.get("data").asText();
-        }
-        log.warn("文件服务返回异常: {}", response.getBody());
-        return null;
     }
 } 

@@ -5,7 +5,9 @@ import com.dailybaro.capsule.model.vo.EmotionCapsuleVO;
 import com.dailybaro.capsule.service.EmotionCapsuleService;
 import com.dailybaro.common.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -17,11 +19,17 @@ public class EmotionCapsuleController {
     @Autowired
     private EmotionCapsuleService capsuleService;
 
-    @PostMapping
-    public Result<EmotionCapsuleVO> createCapsule(@ModelAttribute CreateCapsuleDTO createDTO, HttpServletRequest request) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Result<EmotionCapsuleVO> createCapsule(@ModelAttribute CreateCapsuleDTO createDTO,
+                                                  @RequestPart(value = "mediaFiles", required = false) List<MultipartFile> mediaFiles,
+                                                  HttpServletRequest request) {
         Long userId = getUserIdFromRequest(request);
         if (userId == null) {
             return Result.fail("用户未登录");
+        }
+        // 将文件列表塞回DTO，确保服务层能获取到
+        if (mediaFiles != null) {
+            createDTO.setMediaFiles(mediaFiles);
         }
         return capsuleService.createCapsule(createDTO, userId);
     }

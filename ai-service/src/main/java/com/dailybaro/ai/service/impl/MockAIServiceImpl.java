@@ -52,12 +52,35 @@ public class MockAIServiceImpl implements AIService {
 
     @Override
     public Result<String> getGeneralResponse(String question) {
+        // 检查是否是日签生成请求
+        if (question.contains("日签") || question.contains("今日") || question.contains("心情总结")) {
+            return getDailyQuoteResponse();
+        }
+        
         for (Map.Entry<String, String> entry : GENERAL_QUESTION_RESPONSES.entrySet()) {
             if (question.contains(entry.getKey())) {
                 return Result.success(entry.getValue());
             }
         }
         return Result.success("这是一个很好的问题，我现在还在学习中，暂时无法回答。");
+    }
+
+    private Result<String> getDailyQuoteResponse() {
+        String[] dailyQuotes = {
+            "今天的你比昨天更优秀，明天的你比今天更精彩。",
+            "每一个微笑都是对生活的热爱，每一次努力都是对梦想的坚持。",
+            "心若向阳，无畏前行；今日耕耘，明日花开。",
+            "保持热爱，奔赴山海；保持初心，方得始终。",
+            "你的存在本身就是一种美好，你的努力终将绽放光芒。",
+            "温柔对待自己，也温柔对待他人，世界会因你而更美好。",
+            "今天的阳光为你而亮，明天的希望为你而生。",
+            "每一个清晨都是新的开始，每一个夜晚都是成长的见证。",
+            "你值得拥有所有的美好，也值得被世界温柔以待。",
+            "保持希望，保持微笑，生活总会给你惊喜。"
+        };
+        
+        int randomIndex = (int) (Math.random() * dailyQuotes.length);
+        return Result.success(dailyQuotes[randomIndex]);
     }
 
     @Override
