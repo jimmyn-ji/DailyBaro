@@ -1,6 +1,6 @@
 package com.dailybaro.quote.controller;
 
-import com.dailybaro.quote.util.Result;
+import com.dailybaro.common.util.Result;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

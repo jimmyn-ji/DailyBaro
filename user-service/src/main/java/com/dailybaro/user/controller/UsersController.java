@@ -4,7 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.dailybaro.user.model.User;
 import com.dailybaro.user.model.dto.UpdatePwdDTO;
 import com.dailybaro.user.service.UserService;
-import com.dailybaro.user.util.Result;
+import com.dailybaro.common.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -65,6 +65,12 @@ public class UsersController {
     public Result<String> updateUserInfo(@RequestBody User user) {
         userService.updateUserInfo(user);
         return Result.success("个人信息修改成功");
+    }
+
+    @PostMapping("/increaseEnergy")
+    public Result<String> increaseEnergy(@RequestParam("uid") Long uid, @RequestParam("energy") int energy) {
+        userService.increaseEnergy(uid, energy);
+        return Result.success("能量值增加成功");
     }
 
     @DeleteMapping("/delete/{uid}")

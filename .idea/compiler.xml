@@ -7,10 +7,6 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="diary-service" />
-        <module name="common" />
-        <module name="gateway-service" />
-        <module name="emotion-service" />
         <module name="capsule-service" />
         <module name="anonymous-service" />
         <module name="consultation-service" />
@@ -19,6 +15,11 @@
         <module name="file-service" />
         <module name="ai-service" />
         <module name="mysterybox-service" />
+        <module name="diary-service" />
+        <module name="common" />
+        <module name="gateway-service" />
+        <module name="emotion-service" />
+        <module name="app-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

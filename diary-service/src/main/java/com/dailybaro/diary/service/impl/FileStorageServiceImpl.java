@@ -1,7 +1,7 @@
 package com.dailybaro.diary.service.impl;
 
 import com.dailybaro.diary.service.FileStorageService;
-import com.dailybaro.diary.util.Result;
+import com.dailybaro.common.util.Result;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

@@ -17,7 +17,7 @@ import com.dailybaro.diary.model.vo.MediaVO;
 import com.dailybaro.diary.service.DiaryService;
 import com.dailybaro.diary.service.FileStorageService;
 import com.dailybaro.diary.service.UserServiceClient;
-import com.dailybaro.diary.util.Result;
+import com.dailybaro.common.util.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -283,21 +283,25 @@ public class DiaryServiceImpl implements DiaryService {
     public Result<List<DiaryVO>> findDiaries(QueryDiaryDTO queryDiaryDTO, Long userId) {
         QueryWrapper<Diary> queryWrapper = new QueryWrapper<>();
         queryWrapper.orderByDesc("create_time");
-        // 状态过滤
-        if (queryDiaryDTO != null && queryDiaryDTO.getStatus() != null) {
-            queryWrapper.eq("status", queryDiaryDTO.getStatus());
+        
+        // 用户过滤 - 必须根据当前登录用户ID过滤
+        if (userId != null) {
+            queryWrapper.eq("user_id", userId);
         } else {
-            // 默认只查已发布
-            queryWrapper.eq("status", "published");
+            return Result.fail("用户未登录");
         }
-        // 用户过滤
-        if (queryDiaryDTO != null && queryDiaryDTO.getTargetUserId() != null) {
-            queryWrapper.eq("user_id", queryDiaryDTO.getTargetUserId());
+        
+        // 状态过滤
+        if (queryDiaryDTO != null && queryDiaryDTO.getStatus() != null && !queryDiaryDTO.getStatus().equals("all")) {
+            queryWrapper.eq("status", queryDiaryDTO.getStatus());
         }
+        // 注意：移除了默认的 status = "published" 过滤，这样可以查询所有状态的日记
+        
         // 日期过滤
         if (queryDiaryDTO != null && queryDiaryDTO.getDate() != null) {
             queryWrapper.apply("DATE(create_time) = {0}", queryDiaryDTO.getDate());
         }
+        
         // 标签过滤（如有）
         // TODO: SQL级别优化
         List<Diary> diaries = diaryMapper.selectList(queryWrapper);

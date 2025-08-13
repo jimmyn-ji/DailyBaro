@@ -1,120 +1,105 @@
+server:
+  port: 8000
+
 spring:
   application:
     name: gateway-service
   main:
     web-application-type: reactive
-  # 禁用 Netty DNS 原生库，解决 macOS 兼容性问题
-  netty:
-    resolver-dns:
-      native: false
+  codec:
+    max-in-memory-size: 50MB
   cloud:
     gateway:
+      httpclient:
+        max-in-memory-size: 52428800
+        connect-timeout: 30000
+        response-timeout: 120s
       routes:
-        # 日记服务
+        - id: user-service
+          uri: http://localhost:8001
+          predicates:
+            - Path=/api/user/**
+        - id: user-users
+          uri: http://localhost:8001
+          predicates:
+            - Path=/users/**
+        - id: user-login
+          uri: http://localhost:8001
+          predicates:
+            - Path=/login/**
         - id: diary-service
           uri: http://localhost:8002
           predicates:
             - Path=/api/diary/**
-        - id: diary-service-tag
+        - id: tag-endpoint
           uri: http://localhost:8002
           predicates:
             - Path=/api/tag/**
-        
-        # 文件服务 - 处理文件上传和静态资源访问
         - id: file-service-uploads
           uri: http://localhost:8003
           predicates:
             - Path=/uploads/**
-        
-        # 用户服务
-        - id: user-service-api
-          uri: http://localhost:8081
+        - id: file-service-api
+          uri: http://localhost:8003
           predicates:
-            - Path=/api/user/**
-        - id: user-service-login
-          uri: http://localhost:8081
-          predicates:
-            - Path=/login/**
-        - id: user-service-test
-          uri: http://localhost:8081
-          predicates:
-            - Path=/test/**
-        - id: user-service-users
-          uri: http://localhost:8081
-          predicates:
-            - Path=/users/**
-        
-        # 情绪分析服务
+            - Path=/api/file/**
         - id: emotion-service
           uri: http://localhost:8004
           predicates:
-            - Path=/api/analysis/**
-        
-        # 咨询信息服务
-        - id: consultation-service
-          uri: http://localhost:8015
+            - Path=/api/emotion/**
+        - id: emotion-analysis-service
+          uri: http://localhost:8004
           predicates:
-            - Path=/consultation/**
-        
-        # 匿名帖子服务
+            - Path=/api/analysis/**
         - id: anonymous-service
+          uri: http://localhost:8005
+          predicates:
+            - Path=/api/anonymous/**
+        - id: consultation-service
           uri: http://localhost:8006
           predicates:
-            - Path=/api/anonymous-posts/**
-        
-        # 神秘盒子服务
-        - id: mysterybox-service
-          uri: http://localhost:8007
-          predicates:
-            - Path=/api/mystery-box/**
-        
-        # AI服务
+            - Path=/api/consultation/**
         - id: ai-service
           uri: http://localhost:8008
           predicates:
             - Path=/api/ai/**
-        
-        # 日签服务
+        - id: friend-service
+          uri: http://localhost:8008
+          predicates:
+            - Path=/api/friend/**
         - id: quote-service
           uri: http://localhost:8009
           predicates:
             - Path=/api/quotes/**
-        
-        # 情绪胶囊服务
+        - id: mysterybox-service
+          uri: http://localhost:8010
+          predicates:
+            - Path=/api/mysterybox/**
+        - id: anonymous-posts-service
+          uri: http://localhost:8005
+          predicates:
+            - Path=/api/anonymous-posts/**
+        - id: mystery-box-service
+          uri: http://localhost:8010
+          predicates:
+            - Path=/api/mystery-box/**
         - id: capsule-service
           uri: http://localhost:8011
           predicates:
             - Path=/api/capsules/**
-        
-        # 评论服务
-        - id: comment-service
-          uri: http://localhost:8011
-          predicates:
-            - Path=/post/**
-        
-        # 导出服务
-        - id: export-service
+        - id: app-service
           uri: http://localhost:8012
           predicates:
-            - Path=/api/export/**
-        
-        # 标签服务
-        - id: tag-service
-          uri: http://localhost:8013
-          predicates:
-            - Path=/api/tag/**
-        
-
+            - Path=/app/**
       globalcors:
-        corsConfigurations:
+        cors-configurations:
           '[/**]':
-            allowedOriginPatterns: "http://localhost:*"
-            allowedMethods: '*'
-            allowedHeaders: '*'
+            allowedOriginPatterns: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
             allowCredentials: true
-    nacos:
-      discovery:
-        enabled: false
 
-server:
-  port: 8000 
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.web.reactive: DEBUG 

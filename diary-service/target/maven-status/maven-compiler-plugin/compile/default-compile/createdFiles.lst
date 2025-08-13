@@ -21,4 +21,3 @@ com/dailybaro/diary/config/SecurityConfig.class
 com/dailybaro/diary/model/DiaryMedia.class
 com/dailybaro/diary/model/vo/DiaryVO.class
 com/dailybaro/diary/DiaryApplication.class
-com/dailybaro/diary/util/Result.class

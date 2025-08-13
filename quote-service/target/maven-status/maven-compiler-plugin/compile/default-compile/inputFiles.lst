@@ -1,6 +1,7 @@
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/quote-service/src/main/java/com/dailybaro/quote/controller/QuoteController.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/quote-service/src/main/java/com/dailybaro/quote/QuoteApplication.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/quote-service/src/main/java/com/dailybaro/quote/service/DailyQuoteService.java
+/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/quote-service/src/main/java/com/dailybaro/quote/service/RefreshLimitService.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/quote-service/src/main/java/com/dailybaro/quote/service/impl/DailyQuoteServiceImpl.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/quote-service/src/main/java/com/dailybaro/quote/model/UserDailyQuote.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/quote-service/src/main/java/com/dailybaro/quote/controller/DailyQuoteController.java
@@ -8,5 +9,4 @@
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/quote-service/src/main/java/com/dailybaro/quote/service/UserDailyQuoteService.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/quote-service/src/main/java/com/dailybaro/quote/mapper/DailyQuoteMapper.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/quote-service/src/main/java/com/dailybaro/quote/model/DailyQuote.java
-/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/quote-service/src/main/java/com/dailybaro/quote/util/Result.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/quote-service/src/main/java/com/dailybaro/quote/service/impl/UserDailyQuoteServiceImpl.java

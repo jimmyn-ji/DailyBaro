@@ -3,6 +3,7 @@ package com.dailybaro.quote.controller;
 import com.dailybaro.quote.model.DailyQuote;
 import com.dailybaro.quote.model.UserDailyQuote;
 import com.dailybaro.quote.service.DailyQuoteService;
+import com.dailybaro.quote.service.RefreshLimitService;
 import com.dailybaro.quote.service.UserDailyQuoteService;
 import com.dailybaro.common.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class DailyQuoteController {
     @Autowired
     private UserDailyQuoteService userDailyQuoteService;
 
+    @Autowired
+    private RefreshLimitService refreshLimitService;
+
     @GetMapping("/random")
     public Result<DailyQuote> getRandomQuote() {
         return dailyQuoteService.getRandomQuote();
@@ -51,6 +55,9 @@ public class DailyQuoteController {
     public Result<DailyQuote> getManualRandomQuote(HttpServletRequest request) {
         Long userId = getUserIdFromRequest(request);
         if (userId == null) return Result.fail("用户未登录");
+        if (!refreshLimitService.allowAndIncrement(userId)) {
+            return Result.error(429, "今日已达换一换上限(3次)");
+        }
         return dailyQuoteService.getManualRandomQuoteForUser(userId);
     }
 

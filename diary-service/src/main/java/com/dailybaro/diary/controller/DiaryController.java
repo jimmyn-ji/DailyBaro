@@ -8,7 +8,7 @@ import com.dailybaro.diary.model.dto.QueryDiaryDTO;
 import com.dailybaro.diary.model.dto.UpdateDiaryDTO;
 import com.dailybaro.diary.model.vo.DiaryVO;
 import com.dailybaro.diary.service.DiaryService;
-import com.dailybaro.diary.util.Result;
+import com.dailybaro.common.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

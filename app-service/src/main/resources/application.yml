@@ -1,1 +1,14 @@
+server:
+  port: 8012
+
+spring:
+  application:
+    name: app-service
+  main:
+    allow-bean-definition-overriding: true
+
+logging:
+  level:
+    com.dailybaro.app: debug
+
  

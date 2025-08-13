@@ -10,6 +10,5 @@
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/user-service/src/main/java/com/dailybaro/user/service/impl/UserServiceImpl.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/user-service/src/main/java/com/dailybaro/user/model/dto/WxLoginDTO.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/user-service/src/main/java/com/dailybaro/user/model/dto/UserPwDTO.java
-/Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/user-service/src/main/java/com/dailybaro/user/util/Result.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/user-service/src/main/java/com/dailybaro/user/controller/UsersController.java
 /Users/minchi/Desktop/DailyBaro/DailyBaro-cloud/user-service/src/main/java/com/dailybaro/user/mapper/UserMapper.java

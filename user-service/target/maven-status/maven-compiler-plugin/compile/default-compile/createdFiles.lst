@@ -7,6 +7,6 @@ com/dailybaro/user/model/dto/UserPwDTO.class
 com/dailybaro/user/service/UserService.class
 com/dailybaro/user/UserApplication.class
 com/dailybaro/user/config/SecurityConfig.class
+com/dailybaro/user/model/dto/UserRegisterDTO.class
 com/dailybaro/user/model/User.class
 com/dailybaro/user/mapper/UserMapper.class
-com/dailybaro/user/util/Result.class

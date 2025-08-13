@@ -1,7 +1,7 @@
 package com.dailybaro.file.service.impl;
 
 import com.dailybaro.file.service.FileStorageService;
-import com.dailybaro.file.util.Result;
+import com.dailybaro.common.util.Result;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -82,7 +82,7 @@ public class FileStorageServiceImpl implements FileStorageService {
             File dest = new File(uploadDir + File.separator + newFilename);
             file.transferTo(dest);
 
-            // 返回文件访问路径
+            // 返回文件访问路径（通过网关转发）
             String fileUrl = "/uploads/" + newFilename;
             return Result.success(fileUrl);
         } catch (IOException e) {

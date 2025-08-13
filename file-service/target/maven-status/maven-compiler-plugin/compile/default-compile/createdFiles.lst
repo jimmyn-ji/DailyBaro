@@ -1,6 +1,6 @@
 com/dailybaro/file/FileApplication.class
 com/dailybaro/file/service/impl/FileStorageServiceImpl.class
 com/dailybaro/file/service/FileStorageService.class
-com/dailybaro/file/util/Result.class
+com/dailybaro/file/StaticResourceConfig.class
 com/dailybaro/file/config/WebConfig.class
 com/dailybaro/file/controller/FileUploadController.class

@@ -1,7 +1,7 @@
 package com.dailybaro.file.controller;
 
 import com.dailybaro.file.service.FileStorageService;
-import com.dailybaro.file.util.Result;
+import com.dailybaro.common.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,11 +18,14 @@ public class FileUploadController {
 
     @PostMapping("/image")
     public Result<String> uploadImage(@RequestParam("file") MultipartFile file) {
-        return fileStorageService.storeFile(file);
+        Result<String> r = fileStorageService.storeFile(file);
+        // 统一返回 { code, message, data }，data为可直接访问的URL
+        return r;
     }
 
     @PostMapping("/media")
     public Result<String> uploadMedia(@RequestParam("file") MultipartFile file) {
-        return fileStorageService.storeFile(file); // 支持所有类型
+        Result<String> r = fileStorageService.storeFile(file);
+        return r;
     }
 } 

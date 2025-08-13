@@ -17,8 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -27,14 +25,19 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.HttpStatus;
+import java.util.Map;
 
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.io.IOException;
+import com.dailybaro.capsule.service.UserClient;
+import java.io.File;
+import java.nio.file.Files;
+import org.springframework.mock.web.MockMultipartFile;
+import com.dailybaro.capsule.util.MggDecoder;
 
 @Slf4j
 @Service
@@ -46,7 +49,10 @@ public class EmotionCapsuleServiceImpl implements EmotionCapsuleService {
     @Autowired
     private CapsuleMediaMapper mediaMapper;
 
-    // 文件服务地址（通过网关）
+    @Autowired
+    private UserClient userClient;
+
+    // File service address (via gateway)
     private static final String FILE_SERVICE_UPLOAD_URL = "http://localhost:8000/uploads/media";
 
     @Override
@@ -94,6 +100,13 @@ public class EmotionCapsuleServiceImpl implements EmotionCapsuleService {
 
         capsuleMapper.insert(capsule);
         log.info("胶囊创建成功，ID: {}", capsule.getCapsuleId());
+        // 新增：赠送能量值
+        try {
+            userClient.increaseEnergy(userId, 3);
+            log.info("赠送用户{}能量+3成功", userId);
+        } catch (Exception e) {
+            log.warn("赠送能量失败: {}", e.getMessage());
+        }
 
         // 处理媒体文件上传 - 改进异常处理
         List<String> failedFiles = new ArrayList<>();
@@ -271,7 +284,7 @@ public class EmotionCapsuleServiceImpl implements EmotionCapsuleService {
                 }
                 
                 // 音频类型
-                if (lowerFileName.matches(".*\\.(mp3|wav|ogg|aac|m4a|ncm)$")) {
+                if (lowerFileName.matches(".*\\.(mp3|wav|ogg|aac|m4a|ncm|mgg)$")) {
                     return "audio";
                 }
                 
@@ -287,89 +300,104 @@ public class EmotionCapsuleServiceImpl implements EmotionCapsuleService {
     }
 
     private String uploadToFileService(MultipartFile file) {
-        log.info("开始调用文件服务上传文件: {}", file.getOriginalFilename());
-        
-        // 先获取文件字节，处理可能的IOException
-        byte[] fileBytes;
         try {
-            fileBytes = file.getBytes();
-        } catch (IOException e) {
-            log.error("读取文件字节失败: {}", file.getOriginalFilename(), e);
-            return null;
-        }
-        
-        RestTemplate restTemplate = new RestTemplate();
-        
-        // 设置超时时间
-        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-        factory.setConnectTimeout(10000); // 10秒连接超时
-        factory.setReadTimeout(30000);    // 30秒读取超时
-        restTemplate.setRequestFactory(factory);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-        Resource fileResource = new ByteArrayResource(fileBytes) {
-            @Override
-            public String getFilename() {
-                return file.getOriginalFilename();
-            }
-        };
-
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("file", fileResource);
-
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-        try {
-            log.info("发送请求到文件服务: {}", FILE_SERVICE_UPLOAD_URL);
-            
-            ResponseEntity<String> response = restTemplate.postForEntity(FILE_SERVICE_UPLOAD_URL, requestEntity, String.class);
-            
-            log.info("文件服务响应状态: {}, 响应体: {}", response.getStatusCode(), response.getBody());
-            
-            if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
-                log.warn("文件服务返回失败状态: {}", response.getStatusCode());
-                return null;
-            }
-
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode root = mapper.readTree(response.getBody());
-            
-            if (root.has("code") && root.get("code").asInt() == 200 && root.has("data")) {
-                String fileUrl = root.get("data").asText();
-                log.info("文件上传成功，返回URL: {}", fileUrl);
-                return fileUrl;
-            } else {
-                log.warn("文件服务返回异常: {}", response.getBody());
-                return null;
-            }
-        } catch (Exception e) {
-            log.error("调用文件服务失败: {}", e.getMessage(), e);
-            
-            // 如果是连接超时，尝试重试一次
-            if (e.getMessage().contains("timeout") || e.getMessage().contains("Connection refused")) {
-                log.info("检测到超时或连接问题，尝试重试...");
+            byte[] fileBytes = file.getBytes();
+            String fileName = file.getOriginalFilename();
+            String realFileName = fileName;
+            if (fileName != null && fileName.toLowerCase().endsWith(".mgg")) {
                 try {
-                    Thread.sleep(2000); // 等待2秒后重试
-                    ResponseEntity<String> retryResponse = restTemplate.postForEntity(FILE_SERVICE_UPLOAD_URL, requestEntity, String.class);
-                    
-                    if (retryResponse.getStatusCode().is2xxSuccessful() && retryResponse.getBody() != null) {
-                        ObjectMapper mapper = new ObjectMapper();
-                        JsonNode root = mapper.readTree(retryResponse.getBody());
-                        
-                        if (root.has("code") && root.get("code").asInt() == 200 && root.has("data")) {
-                            String fileUrl = root.get("data").asText();
-                            log.info("重试成功，文件上传成功，返回URL: {}", fileUrl);
+                    File tempMgg = File.createTempFile("capsule_", ".mgg");
+                    Files.write(tempMgg.toPath(), fileBytes);
+                    byte[] mp3Bytes = MggDecoder.decodeToMp3(tempMgg);
+                    tempMgg.delete();
+                    File tempMp3 = File.createTempFile("capsule_", ".mp3");
+                    Files.write(tempMp3.toPath(), mp3Bytes);
+                    fileBytes = mp3Bytes;
+                    realFileName = fileName.replaceAll("\\.mgg$", ".mp3");
+                    file = new MockMultipartFile(realFileName, realFileName, "audio/mp3", mp3Bytes);
+                    tempMp3.delete();
+                } catch (Exception e) {
+                    log.error("mgg转码mp3失败: {}", e.getMessage(), e);
+                }
+            } else if (fileName != null && fileName.toLowerCase().endsWith(".ogg")) {
+                try {
+                    File tempOgg = File.createTempFile("capsule_", ".ogg");
+                    Files.write(tempOgg.toPath(), fileBytes);
+                    byte[] mp3Bytes = MggDecoder.decodeOggToMp3(tempOgg);
+                    tempOgg.delete();
+                    File tempMp3 = File.createTempFile("capsule_", ".mp3");
+                    Files.write(tempMp3.toPath(), mp3Bytes);
+                    fileBytes = mp3Bytes;
+                    realFileName = fileName.replaceAll("\\.ogg$", ".mp3");
+                    file = new MockMultipartFile(realFileName, realFileName, "audio/mp3", mp3Bytes);
+                    tempMp3.delete();
+                    log.info("OGG已转码为MP3: {} -> {}", fileName, realFileName);
+                } catch (Exception e) {
+                    log.error("ogg转码mp3失败: {}", e.getMessage(), e);
+                }
+            }
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+            final String finalFileName = realFileName;
+            body.add("file", new ByteArrayResource(fileBytes) {
+                @Override
+                public String getFilename() {
+                    return finalFileName;
+                }
+            });
+            HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+            log.info("发送请求到文件服务: {}", FILE_SERVICE_UPLOAD_URL);
+            try {
+                ResponseEntity<Object> response = restTemplate.postForEntity(FILE_SERVICE_UPLOAD_URL, requestEntity, Object.class);
+                log.info("文件服务响应状态: {}", response.getStatusCode());
+                log.info("文件服务响应内容: {}", response.getBody());
+                if (response.getStatusCode() == HttpStatus.OK && response.getBody() instanceof Map) {
+                    Map<?, ?> responseBody = (Map<?, ?>) response.getBody();
+                    Object dataObj = responseBody.get("data");
+                    if (dataObj instanceof String) {
+                        String fileUrl = (String) dataObj;
+                        log.info("文件上传成功(data)：{}", fileUrl);
+                        return fileUrl;
+                    }
+                    Object urlObj = responseBody.get("url");
+                    if (urlObj instanceof String) {
+                        String fileUrl = (String) urlObj;
+                        log.info("文件上传成功(url)：{}", fileUrl);
+                        return fileUrl;
+                    }
+                }
+                log.warn("文件服务返回格式异常或不包含URL字段");
+                return null;
+            } catch (Exception e) {
+                log.error("调用文件服务失败: {}", e.getMessage(), e);
+                log.info("尝试重试上传文件...");
+                try {
+                    Thread.sleep(1000);
+                    ResponseEntity<Object> retryResponse = restTemplate.postForEntity(FILE_SERVICE_UPLOAD_URL, requestEntity, Object.class);
+                    if (retryResponse.getStatusCode() == HttpStatus.OK && retryResponse.getBody() instanceof Map) {
+                        Map<?, ?> responseBody = (Map<?, ?>) retryResponse.getBody();
+                        Object dataObj = responseBody.get("data");
+                        if (dataObj instanceof String) {
+                            String fileUrl = (String) dataObj;
+                            log.info("重试后文件上传成功(data)，URL: {}", fileUrl);
+                            return fileUrl;
+                        }
+                        Object urlObj = responseBody.get("url");
+                        if (urlObj instanceof String) {
+                            String fileUrl = (String) urlObj;
+                            log.info("重试后文件上传成功(url)，URL: {}", fileUrl);
                             return fileUrl;
                         }
                     }
-                } catch (Exception retryEx) {
-                    log.error("重试失败: {}", retryEx.getMessage(), retryEx);
+                } catch (Exception retryException) {
+                    log.error("重试上传也失败: {}", retryException.getMessage());
                 }
+                return null;
             }
-            
-            // 不再抛出异常，返回null表示失败
+        } catch (IOException e) {
+            log.error("读取文件字节失败: {}", e.getMessage(), e);
             return null;
         }
     }

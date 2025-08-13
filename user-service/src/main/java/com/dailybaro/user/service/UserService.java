@@ -74,4 +74,8 @@ public class UserService {
             userMapper.updateUserInfo(user);
         }
     }
+
+    public void increaseEnergy(Long uid, int energy) {
+        userMapper.increaseEnergy(uid, energy);
+    }
 } 

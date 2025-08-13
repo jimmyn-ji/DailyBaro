@@ -165,71 +165,60 @@ public class EmotionAnalysisServiceImpl implements EmotionAnalysisService {
     @Override
     public Result<List<String>> getAIAnalysisPoints(Map<String, Object> emotionData) {
         try {
-            // 基于真实数据生成智能分析
-            List<String> analysisPoints = new ArrayList<>();
-            
-            // 分析情绪分布
+            // 组织简要数据，发送给AI，要求返回四个维度的JSON
+            ObjectMapper mapper = this.objectMapper;
+            String jsonInput = mapper.writeValueAsString(emotionData);
+            String prompt = "你是一位情绪分析专家。下面是某用户一定时间段内的情绪数据（包含分布 distribution 和波动 fluctuation）。请基于这些数据，输出严格的JSON，不要任何多余文字，格式如下：\n" +
+                    "{\\\"positives\\\":\\\"(积极面)\\\",\\\"risks\\\":\\\"(潜在风险)\\\",\\\"suggestions\\\":\\\"(建议)\\\",\\\"actions\\\":\\\"(可执行的小行动)\\\"}\n" +
+                    "每个字段一到两句话，面向普通用户，简洁。以下是数据：\n" + jsonInput;
+
+            String ai = callDeepSeek(prompt);
+            if (ai != null && !ai.isEmpty()) {
+                // 解析AI返回的JSON
+                Map<String, Object> aiMap = mapper.readValue(ai.replace('\n', ' '), Map.class);
+                List<String> points = new ArrayList<>();
+                Object p = aiMap.get("positives");
+                Object r = aiMap.get("risks");
+                Object s = aiMap.get("suggestions");
+                Object a = aiMap.get("actions");
+                if (p != null) points.add("积极面：" + String.valueOf(p));
+                if (r != null) points.add("潜在风险：" + String.valueOf(r));
+                if (s != null) points.add("建议：" + String.valueOf(s));
+                if (a != null) points.add("可执行行动：" + String.valueOf(a));
+                if (!points.isEmpty()) {
+                    return Result.success(points);
+                }
+            }
+        } catch (Exception e) {
+            log.warn("AI情绪分析解析失败，使用回退逻辑: {}", e.getMessage());
+        }
+
+        // 回退：使用规则生成（确保接口有返回）
+        try {
+            List<String> fallback = new ArrayList<>();
+            // 简要判断：统计分布中的积极/消极占比
+            double positivePercentage = 0.0;
+            double negativePercentage = 0.0;
             if (emotionData.containsKey("distribution")) {
+                @SuppressWarnings("unchecked")
                 List<Map<String, Object>> distribution = (List<Map<String, Object>>) emotionData.get("distribution");
-                double positivePercentage = 0.0;
-                double negativePercentage = 0.0;
-                
                 for (Map<String, Object> item : distribution) {
                     String emotion = (String) item.get("emotion");
-                    Double percentage = (Double) item.get("percentage");
-                    
-                    if (isPositiveEmotion(emotion)) {
-                        positivePercentage += percentage;
-                    } else if (isNegativeEmotion(emotion)) {
-                        negativePercentage += percentage;
-                    }
-                }
-                
-                // 根据情绪分布生成分析
-                if (positivePercentage > 60) {
-                    analysisPoints.add("您的情绪状态整体积极向上，建议继续保持这种良好的心态");
-                    analysisPoints.add("多与朋友分享快乐时光，增强社交连接");
-                } else if (negativePercentage > 50) {
-                    analysisPoints.add("检测到较多负面情绪，建议寻求朋友或专业人士的支持");
-                    analysisPoints.add("尝试进行放松活动，如冥想、散步或听音乐");
-                } else {
-                    analysisPoints.add("情绪状态相对平衡，建议保持规律的生活作息");
-                    analysisPoints.add("适当增加户外活动，提升整体心情");
-                }
-            }
-            
-            // 分析情绪波动
-            if (emotionData.containsKey("fluctuation")) {
-                List<Map<String, Object>> fluctuation = (List<Map<String, Object>>) emotionData.get("fluctuation");
-                if (fluctuation.size() > 1) {
-                    double avgValue = fluctuation.stream()
-                        .mapToDouble(item -> ((Number) item.get("value")).doubleValue())
-                        .average()
-                        .orElse(0.0);
-                    
-                    double variance = fluctuation.stream()
-                        .mapToDouble(item -> Math.pow(((Number) item.get("value")).doubleValue() - avgValue, 2))
-                        .average()
-                        .orElse(0.0);
-                    
-                    if (variance > 0.5) {
-                        analysisPoints.add("情绪波动较大，建议学习情绪管理技巧");
-                        analysisPoints.add("建立稳定的日常作息，有助于情绪稳定");
-                    } else {
-                        analysisPoints.add("情绪相对稳定，继续保持这种良好的状态");
+                    Object percentageObj = item.get("percentage");
+                    if (percentageObj instanceof Number) {
+                        double pct = ((Number) percentageObj).doubleValue();
+                        if (isPositiveEmotion(emotion)) positivePercentage += pct;
+                        else if (isNegativeEmotion(emotion)) negativePercentage += pct;
                     }
                 }
             }
-            
-            // 添加通用建议
-            analysisPoints.add("培养积极兴趣爱好，丰富生活内容");
-            analysisPoints.add("保持规律运动，有助于情绪调节");
-            analysisPoints.add("与家人朋友多沟通，获得情感支持");
-            
-            return Result.success(analysisPoints);
-            
-        } catch (Exception e) {
-            log.error("情绪分析失败", e);
+            fallback.add("积极面：正向情绪占比大约 " + Math.round(positivePercentage) + "%，请继续保持");
+            fallback.add("潜在风险：负向情绪占比约 " + Math.round(negativePercentage) + "% ，注意压力来源");
+            fallback.add("建议：保证睡眠与规律作息，适量运动与社交");
+            fallback.add("可执行行动：今天完成一次10分钟散步或一次深呼吸练习");
+            return Result.success(fallback);
+        } catch (Exception ex) {
+            log.error("回退生成情绪分析失败", ex);
             return Result.success(getDefaultAnalysisPoints());
         }
     }
@@ -270,10 +259,12 @@ public class EmotionAnalysisServiceImpl implements EmotionAnalysisService {
             ResponseEntity<Map> response = restTemplate.postForEntity(AI_API_URL, entity, Map.class);
             
             if (response.getBody() != null) {
-                List choices = (List) response.getBody().get("choices");
+                @SuppressWarnings("unchecked")
+                List<Map<String, Object>> choices = (List<Map<String, Object>>) response.getBody().get("choices");
                 if (choices != null && !choices.isEmpty()) {
-                    Map choice = (Map) choices.get(0);
-                    Map msg = (Map) choice.get("message");
+                    Map<String, Object> choice = choices.get(0);
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> msg = (Map<String, Object>) choice.get("message");
                     return (String) msg.get("content");
                 }
             }

@@ -5,7 +5,7 @@ import com.dailybaro.diary.model.dto.CreateDiaryDTO;
 import com.dailybaro.diary.model.dto.QueryDiaryDTO;
 import com.dailybaro.diary.model.dto.UpdateDiaryDTO;
 import com.dailybaro.diary.model.vo.DiaryVO;
-import com.dailybaro.diary.util.Result;
+import com.dailybaro.common.util.Result;
 import java.util.List;
 
 public interface DiaryService {

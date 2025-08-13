@@ -1,6 +1,7 @@
 package com.dailybaro.capsule.controller;
 
 import com.dailybaro.capsule.model.dto.CreateCapsuleDTO;
+import com.dailybaro.capsule.model.dto.CreateCapsuleJsonDTO;
 import com.dailybaro.capsule.model.vo.EmotionCapsuleVO;
 import com.dailybaro.capsule.service.EmotionCapsuleService;
 import com.dailybaro.common.util.Result;
@@ -32,6 +33,24 @@ public class EmotionCapsuleController {
             createDTO.setMediaFiles(mediaFiles);
         }
         return capsuleService.createCapsule(createDTO, userId);
+    }
+
+    // 小程序端简化：直接传已上传的mediaUrls
+    @PostMapping(path = "/json", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Result<EmotionCapsuleVO> createCapsuleJson(@RequestBody CreateCapsuleJsonDTO createJsonDTO,
+                                                      HttpServletRequest request) {
+        Long userId = getUserIdFromRequest(request);
+        if (userId == null) {
+            return Result.fail("用户未登录");
+        }
+        CreateCapsuleDTO dto = new CreateCapsuleDTO();
+        dto.setCurrentEmotion(createJsonDTO.getCurrentEmotion());
+        dto.setThoughts(createJsonDTO.getThoughts());
+        dto.setFutureGoal(createJsonDTO.getFutureGoal());
+        dto.setOpenTime(createJsonDTO.getOpenTime());
+        dto.setReminderType(createJsonDTO.getReminderType());
+        // mediaUrls 将在 service 层持久化
+        return capsuleService.createCapsule(dto, userId);
     }
 
     @GetMapping

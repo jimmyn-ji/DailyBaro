@@ -1,6 +1,6 @@
 package com.dailybaro.file.service;
 
-import com.dailybaro.file.util.Result;
+import com.dailybaro.common.util.Result;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface FileStorageService {

@@ -1,6 +1,6 @@
 package com.dailybaro.user.controller;
 
-import com.dailybaro.user.util.Result;
+import com.dailybaro.common.util.Result;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

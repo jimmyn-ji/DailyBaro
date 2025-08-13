@@ -3,10 +3,13 @@ com/dailybaro/capsule/model/dto/CreateCapsuleDTO.class
 com/dailybaro/capsule/service/impl/EmotionCapsuleServiceImpl$1.class
 com/dailybaro/capsule/service/impl/EmotionCapsuleServiceImpl.class
 com/dailybaro/capsule/mapper/CapsuleMediaMapper.class
+com/dailybaro/capsule/service/UserClient.class
 com/dailybaro/capsule/service/EmotionCapsuleService.class
 com/dailybaro/capsule/CapsuleApplication.class
 com/dailybaro/capsule/model/EmotionCapsule.class
 com/dailybaro/capsule/model/CapsuleMedia.class
 com/dailybaro/capsule/mapper/EmotionCapsuleMapper.class
 com/dailybaro/capsule/controller/EmotionCapsuleController.class
+com/dailybaro/capsule/util/MggDecoder.class
+com/dailybaro/capsule/model/dto/CreateCapsuleJsonDTO.class
 com/dailybaro/capsule/model/vo/MediaVO.class
