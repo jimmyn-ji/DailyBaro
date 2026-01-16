@@ -87,21 +87,15 @@ cd /Users/minchi/Desktop/DailyBaro
 ## 项目结构
 
 ```
-DailyBaro/
-├── DailyBaro-cloud/          # 后端微服务
-│   ├── common/               # 公共模块
-│   ├── gateway-service/      # 网关服务
-│   ├── user-service/         # 用户服务
-│   ├── content-service/      # 内容服务（日记、情绪、标签等）
-│   ├── file-service/         # 文件服务
-│   ├── app-service/          # 小程序网关
-│   ├── ai-knowledge-service/ # AI 和知识库服务
-│   └── nlp-service/          # NLP 情绪分析服务
-├── DailyBaro-vue/            # Vue3 前端
-├── DailyBaro-app/            # 微信小程序
-├── sql/                      # 数据库脚本
-├── deploy-to-server.sh       # 一键部署脚本
-└── env.example              # 环境变量模板
+DailyBaro-cloud/              # 后端微服务（Spring Cloud）
+├── common/                   # 公共模块
+├── gateway-service/          # 网关服务 (8000)
+├── user-service/             # 用户服务 (8001)
+├── content-service/          # 内容服务 (8011) - 合并了日记、情绪、标签、匿名帖子、神秘盒子、胶囊、日签等功能
+├── file-service/             # 文件服务 (8003)
+├── app-service/              # 小程序网关服务 (8012)
+├── ai-knowledge-service/    # AI 和知识库服务 (8013)
+└── nlp-service/              # NLP 情绪分析服务 (5001) - Python 服务
 ```
 
 ## 主要功能
