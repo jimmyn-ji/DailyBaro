@@ -1,0 +1,67 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # Prometheus自身监控
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # 网关服务监控
+  - job_name: 'gateway-service'
+    static_configs:
+      - targets: ['gateway:8000']
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 10s
+
+  # 用户服务监控
+  - job_name: 'user-service'
+    static_configs:
+      - targets: ['user-service:8001']
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 10s
+
+  # 内容服务监控（合并了日签、神秘盒子、胶囊服务、日记服务）
+  - job_name: 'content-service'
+    static_configs:
+      - targets: ['content-service:8011']
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 10s
+
+  # AI和知识库服务监控
+  - job_name: 'ai-knowledge-service'
+    static_configs:
+      - targets: ['ai-knowledge-service:8013']
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 10s
+
+  # Redis监控
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-cluster-1:6379']
+    scrape_interval: 30s
+
+  # RabbitMQ监控
+  - job_name: 'rabbitmq'
+    static_configs:
+      - targets: ['rabbitmq:15672']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  # MySQL监控
+  - job_name: 'mysql'
+    static_configs:
+      - targets: ['mysql-master:3306']
+    scrape_interval: 30s
+
+  # Elasticsearch监控
+  - job_name: 'elasticsearch'
+    static_configs:
+      - targets: ['elasticsearch:9200']
+    metrics_path: '/_prometheus/metrics'
+    scrape_interval: 30s
