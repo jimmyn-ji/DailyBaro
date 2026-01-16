@@ -51,6 +51,13 @@ uploads/
 *.ncm
 *.mp3
 *.mp4
+*.ogg
+*.wav
+*.aac
+*.m4a
+
+# 音乐文件目录
+音乐文件/
 
 # 数据库
 *.db
