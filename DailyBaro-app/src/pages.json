@@ -1,0 +1,224 @@
+{
+	"pages": [
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/diary/diary",
+			"style": {
+				"navigationBarTitleText": "日记",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black"
+			}
+		},
+		{
+			"path": "pages/diary/edit",
+			"style": {
+				"navigationBarTitleText": "新建日记",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/diary/detail",
+			"style": {
+				"navigationBarTitleText": "日记详情",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/capsule/capsule",
+			"style": {
+				"navigationBarTitleText": "情绪胶囊",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black"
+			}
+		},
+		{
+			"path": "pages/capsule/create",
+			"style": {
+				"navigationBarTitleText": "创建胶囊",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/mysterybox/mysterybox",
+			"style": {
+				"navigationBarTitleText": "情绪盲盒",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black"
+			}
+		},
+		{
+			"path": "pages/profile/profile",
+			"style": {
+				"navigationBarTitleText": "我的",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black"
+			}
+		},
+		{
+			"path": "pages/anonymous/anonymous",
+			"style": {
+				"navigationBarTitleText": "匿名星球",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black"
+			}
+		},
+		{
+			"path": "pages/anonymous/post",
+			"style": {
+				"navigationBarTitleText": "发布动态",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black"
+			}
+		},
+		{
+			"path": "pages/anonymous/detail",
+			"style": {
+				"navigationBarTitleText": "动态详情",
+				"navigationBarBackgroundColor": "#ffffff",
+				"navigationBarTextStyle": "black"
+			}
+		},
+		{
+			"path": "pages/emotion/emotion",
+			"style": {
+				"navigationBarTitleText": "情绪分析",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/emotion/visualization",
+			"style": {
+				"navigationBarTitleText": "情绪可视化",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/emotion/cv-analysis",
+			"style": {
+				"navigationBarTitleText": "CV情绪分析",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/emotion/audio-analysis",
+			"style": {
+				"navigationBarTitleText": "音频情绪分析",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/ai/ai",
+			"style": {
+				"navigationBarTitleText": "AI智能助手",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/quotes/quotes",
+			"style": {
+				"navigationBarTitleText": "我的日签",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/recommendations/recommendations",
+			"style": {
+				"navigationBarTitleText": "个性化推荐",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/quotes/edit",
+			"style": {
+				"navigationBarTitleText": "编辑日签",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/quotes/create",
+			"style": {
+				"navigationBarTitleText": "创建日签",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/quotes/detail",
+			"style": {
+				"navigationBarTitleText": "日签详情",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/capsule/detail",
+			"style": {
+				"navigationBarTitleText": "胶囊详情",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/knowledge/knowledge",
+			"style": {
+				"navigationBarTitleText": "心理健康知识库",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/knowledge/detail",
+			"style": {
+				"navigationBarTitleText": "知识详情",
+				"navigationStyle": "custom"
+			}
+		}
+	],
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#4a90e2",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"list": [
+			{
+				"pagePath": "pages/diary/diary",
+				"iconPath": "static/icons/diary.png",
+				"selectedIconPath": "static/icons/diary-active.png",
+				"text": "日记"
+			},
+			{
+				"pagePath": "pages/capsule/capsule",
+				"iconPath": "static/icons/capsule.png",
+				"selectedIconPath": "static/icons/capsule-active.png",
+				"text": "胶囊"
+			},
+			{
+				"pagePath": "pages/mysterybox/mysterybox",
+				"iconPath": "static/icons/mysterybox.png",
+				"selectedIconPath": "static/icons/mysterybox-active.png",
+				"text": "盲盒"
+			},
+			{
+				"pagePath": "pages/profile/profile",
+				"iconPath": "static/icons/profile.png",
+				"selectedIconPath": "static/icons/profile-active.png",
+				"text": "我的"
+			}
+		]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "DailyBaro",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"uniIdRouter": {},
+	"easycom": {
+		"autoscan": true,
+		"custom": {
+			"^uni-(.*)": "@/components/uni-$1/uni-$1.vue"
+		}
+	}
+}

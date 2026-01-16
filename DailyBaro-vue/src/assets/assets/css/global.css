@@ -1,0 +1,119 @@
+html, body, #app {
+  height: 100%;
+  margin: 0;
+}
+
+.el-card {
+  margin-top: 15px;
+}
+
+.el-pagination {
+  margin-top: 45px;
+}
+
+.el-table {
+  font-size: 18px;
+}
+
+.my-left {
+  float: left;
+  padding: 20px;
+  margin-top: -10px;
+}
+
+/*  标签  */
+.el-tag {
+  font-size: 15px;
+}
+
+.my-title {
+  color: cornflowerblue;
+  float: left;
+  margin: 10px;
+}
+
+.create-btn {
+  float: right;
+  margin-top: -5px;
+  margin-right: 10px;
+}
+
+.small-input {
+  width: 150px;
+  float: left;
+}
+
+.search {
+  float: left;
+  margin-top: 80px;
+  margin-left: -100px;
+  margin-bottom: 20px;
+}
+
+.create {
+  float: right;
+  margin-right: 20px;
+  margin-top: 80px;
+}
+
+.mid-input {
+  width: 240px;
+  float: left;
+}
+
+.my-mid-input {
+  width: 240px;
+}
+
+.logout {
+  float: right;
+  margin-right: 30px;
+  margin-top: 10px;
+}
+
+.info-first-card {
+  margin: 20px;
+  margin-bottom: 20px;
+}
+
+.el-form-item {
+  margin-left: 30%;
+}
+
+.create-dialog-btn {
+    text-align: center;
+}
+
+.long-text {
+  margin-left: 20%;
+}
+
+.long-text-input {
+  float: left;
+  width: 400px;
+}
+
+.my-time-select {
+  float: left;
+}
+
+
+.detail {
+  margin-top: 40px;
+  text-align: center;
+  color: cornflowerblue;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.el-main {
+  background: transparent !important;
+  min-height: calc(100vh - 70px);
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+body, html {
+  background: url('/static/imgs/bg.jpg') no-repeat center center fixed !important;
+  background-size: cover !important;
+}
+
