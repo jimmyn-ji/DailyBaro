@@ -1,0 +1,91 @@
+server:
+  port: 8011
+
+spring:
+  application:
+    name: content-service
+  cloud:
+    nacos:
+      discovery:
+        enabled: false
+        server-addr: localhost:8848
+      config:
+        enabled: false
+        server-addr: localhost:8848
+        file-extension: yml
+        import-check:
+          enabled: false
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dailybaro?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: ${MYSQL_PASSWORD:your_mysql_password}
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: isdelete
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# 文件上传统一由 file-service 处理（通过网关）
+file:
+  service:
+    url: http://localhost:8000/uploads/media  # 通过网关访问 file-service
+    # 日记服务也使用相同的文件服务
+    diary-url: http://localhost:8000/uploads/media
+
+# 数据保留策略配置
+data-retention:
+  capsule:
+    keep-in-db-days: 180  # 胶囊在数据库中保留180天（半年），超过的移到Redis
+    cache-ttl-days: 365   # Redis缓存保留365天（一年）
+  diary:
+    keep-in-db-days: 180  # 日记在数据库中保留180天（半年），超过的移到Redis
+    cache-ttl-days: 365   # Redis缓存保留365天（一年）
+
+# DeepSeek配置（情绪分析需要）
+deepseek:
+  api-url: https://api.deepseek.com/v1/chat/completions
+  api-key: ${DEEPSEEK_API_KEY:your_deepseek_api_key}
+
+logging:
+  level:
+    com.dailybaro.content: debug
+    com.dailybaro.content.capsule: debug
+    com.dailybaro.content.quote: debug
+    com.dailybaro.content.mysterybox: debug
+    com.dailybaro.content.emotion: debug
+    com.dailybaro.content.anonymous: debug
+    com.dailybaro.content.diary: debug
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
