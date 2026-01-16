@@ -1,0 +1,325 @@
+
+.quotes-container.data-v-5d34c910 {
+	min-height: 100vh;
+	background: linear-gradient(135deg, #4a90e2 0%, #6aa8ff 100%);
+	padding: 20rpx 20rpx 40rpx;
+}
+
+/* 顶部导航栏 */
+.nav-bar.data-v-5d34c910 {
+	background: rgba(255, 255, 255, 0.9);
+	padding: 30rpx 40rpx;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	border-radius: 20rpx;
+	margin-bottom: 30rpx;
+	backdrop-filter: blur(10px);
+	box-shadow: 0 8rpx 32rpx rgba(31, 38, 135, 0.15);
+	position: relative;
+}
+
+/* 返回按钮样式 */
+.back-btn.data-v-5d34c910 {
+	width: 60rpx;
+	height: 60rpx;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(102, 126, 234, 0.1);
+	z-index: 10;
+	transition: all 0.3s ease;
+}
+.back-btn.data-v-5d34c910:active {
+	background: rgba(102, 126, 234, 0.2);
+	transform: scale(0.95);
+}
+.back-icon.data-v-5d34c910 {
+	font-size: 36rpx;
+	color: #4a90e2;
+	font-weight: bold;
+}
+.page-title.data-v-5d34c910 {
+	font-size: 36rpx;
+	font-weight: 700;
+	color: #2c3e50;
+	letter-spacing: 1rpx;
+	position: absolute;
+	left: 0;
+	right: 0;
+	text-align: center;
+	z-index: 1;
+}
+
+/* 内容区域 */
+.content.data-v-5d34c910 {
+	padding: 0 10rpx;
+}
+
+/* 今日日签 */
+.daily-quote-section.data-v-5d34c910 {
+	margin-bottom: 40rpx;
+	position: relative;
+}
+.section-header.data-v-5d34c910 {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 20rpx;
+	padding-left: 20rpx;
+	padding-right: 20rpx;
+}
+.section-title.data-v-5d34c910 {
+	font-size: 32rpx;
+	font-weight: 700;
+	color: #ffffff;
+	text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 圆形创建按钮 */
+.create-circle-btn.data-v-5d34c910 {
+	width: 80rpx;
+	height: 80rpx;
+	background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 8rpx 20rpx rgba(255, 154, 158, 0.3);
+	transition: all 0.3s ease;
+}
+.create-circle-btn.data-v-5d34c910:active {
+	transform: scale(0.95);
+	box-shadow: 0 4rpx 10rpx rgba(255, 154, 158, 0.4);
+}
+.create-circle-icon.data-v-5d34c910 {
+	font-size: 36rpx;
+}
+.daily-quote-card.data-v-5d34c910 {
+	background: rgba(255, 255, 255, 0.95);
+	border-radius: 24rpx;
+	padding: 50rpx 40rpx;
+	box-shadow: 0 12rpx 36rpx rgba(0, 0, 0, 0.15);
+	backdrop-filter: blur(10px);
+	text-align: center;
+	position: relative;
+	overflow: hidden;
+	border: 1rpx solid rgba(255, 255, 255, 0.2);
+}
+.daily-quote-card.data-v-5d34c910::before {
+	content: '"';
+	position: absolute;
+	top: 20rpx;
+	left: 30rpx;
+	font-size: 80rpx;
+	color: rgba(102, 126, 234, 0.1);
+	font-family: serif;
+}
+.quote-content.data-v-5d34c910 {
+	margin-bottom: 40rpx;
+	position: relative;
+	z-index: 2;
+}
+.quote-text.data-v-5d34c910 {
+	font-size: 36rpx;
+	color: #2c3e50;
+	line-height: 1.6;
+	font-weight: 500;
+	font-style: italic;
+	text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.05);
+}
+.quote-footer.data-v-5d34c910 {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding-top: 30rpx;
+	border-top: 1rpx solid rgba(226, 232, 240, 0.6);
+	position: relative;
+	z-index: 2;
+}
+.quote-author.data-v-5d34c910 {
+	font-size: 28rpx;
+	color: #4a90e2;
+	font-weight: 600;
+}
+.quote-date.data-v-5d34c910 {
+	font-size: 26rpx;
+	color: #a0aec0;
+}
+
+/* 我的日签 */
+.my-quotes-section.data-v-5d34c910 {
+	background: rgba(255, 255, 255, 0.95);
+	border-radius: 24rpx;
+	padding: 40rpx 30rpx;
+	box-shadow: 0 12rpx 36rpx rgba(0, 0, 0, 0.15);
+	backdrop-filter: blur(10px);
+	border: 1rpx solid rgba(255, 255, 255, 0.2);
+}
+.my-quotes-section .section-header.data-v-5d34c910 {
+	margin-bottom: 30rpx;
+	padding: 0;
+}
+
+/* 其余样式保持不变... */
+.quotes-list.data-v-5d34c910 {
+	display: flex;
+	flex-direction: column;
+	gap: 24rpx;
+}
+.quote-item.data-v-5d34c910 {
+	background: #f8fafc;
+	border-radius: 20rpx;
+	padding: 30rpx;
+	border: 1rpx solid #e2e8f0;
+	transition: all 0.3s ease;
+	position: relative;
+	overflow: hidden;
+}
+.quote-item.data-v-5d34c910::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 8rpx;
+	height: 100%;
+	background: linear-gradient(135deg, #4a90e2 0%, #6aa8ff 100%);
+}
+.quote-item.data-v-5d34c910:active {
+	transform: translateY(4rpx);
+	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+.quote-header.data-v-5d34c910 {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 20rpx;
+}
+.quote-title.data-v-5d34c910 {
+	font-size: 30rpx;
+	font-weight: 600;
+	color: #2c3e50;
+}
+.quote-time.data-v-5d34c910 {
+	font-size: 24rpx;
+	color: #a0aec0;
+}
+.quote-body.data-v-5d34c910 {
+	margin-bottom: 25rpx;
+}
+.quote-content-text.data-v-5d34c910 {
+	font-size: 28rpx;
+	color: #4a5568;
+	line-height: 1.5;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+.quote-footer.data-v-5d34c910 {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.quote-tags.data-v-5d34c910 {
+	display: flex;
+	gap: 12rpx;
+}
+.emotion-tag.data-v-5d34c910 {
+	background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+	color: #ffffff;
+	padding: 8rpx 16rpx;
+	border-radius: 20rpx;
+	font-size: 22rpx;
+	font-weight: 600;
+}
+.category-tag.data-v-5d34c910 {
+	background: linear-gradient(135deg, #4a90e2 0%, #6aa8ff 100%);
+	color: #ffffff;
+	padding: 8rpx 16rpx;
+	border-radius: 20rpx;
+	font-size: 22rpx;
+	font-weight: 600;
+}
+.quote-actions.data-v-5d34c910 {
+	display: flex;
+	gap: 12rpx;
+}
+.action-btn.data-v-5d34c910 {
+	padding: 10rpx 20rpx;
+	border-radius: 14rpx;
+	font-size: 24rpx;
+	border: none;
+	transition: all 0.3s ease;
+}
+.action-btn.edit.data-v-5d34c910 {
+	background: rgba(102, 126, 234, 0.1);
+	color: #4a90e2;
+	border: 1rpx solid rgba(102, 126, 234, 0.2);
+}
+.action-btn.delete.data-v-5d34c910 {
+	background: rgba(245, 101, 101, 0.1);
+	color: #f56565;
+	border: 1rpx solid rgba(245, 101, 101, 0.2);
+}
+.action-btn.data-v-5d34c910:active {
+	transform: scale(0.95);
+}
+
+/* 空状态 */
+.empty-quotes.data-v-5d34c910 {
+	text-align: center;
+	padding: 80rpx 40rpx;
+}
+.empty-icon.data-v-5d34c910 {
+	font-size: 80rpx;
+	margin-bottom: 30rpx;
+	display: block;
+	opacity: 0.7;
+}
+.empty-text.data-v-5d34c910 {
+	font-size: 32rpx;
+	color: #4a5568;
+	margin-bottom: 15rpx;
+	display: block;
+	font-weight: 600;
+}
+.empty-desc.data-v-5d34c910 {
+	font-size: 26rpx;
+	color: #718096;
+	line-height: 1.5;
+	margin-bottom: 40rpx;
+}
+.empty-btn.data-v-5d34c910 {
+	background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+	color: #ffffff;
+	border: none;
+	border-radius: 18rpx;
+	padding: 24rpx 48rpx;
+	font-size: 28rpx;
+	font-weight: 600;
+	box-shadow: 0 8rpx 20rpx rgba(255, 154, 158, 0.3);
+	transition: all 0.3s ease;
+}
+.empty-btn.data-v-5d34c910:active {
+	transform: translateY(4rpx);
+	box-shadow: 0 4rpx 10rpx rgba(255, 154, 158, 0.4);
+}
+
+/* 动画效果 */
+@keyframes fadeIn-5d34c910 {
+from { opacity: 0; transform: translateY(20rpx);
+}
+to { opacity: 1; transform: translateY(0);
+}
+}
+.daily-quote-card.data-v-5d34c910, .quote-item.data-v-5d34c910 {
+	animation: fadeIn-5d34c910 0.5s ease-out;
+}
+.quote-item.data-v-5d34c910:nth-child(2) { animation-delay: 0.1s;
+}
+.quote-item.data-v-5d34c910:nth-child(3) { animation-delay: 0.2s;
+}
+.quote-item.data-v-5d34c910:nth-child(4) { animation-delay: 0.3s;
+}

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.mapper.CommentMapper">
+
+    <!-- 映射实体类字段 -->
+    <resultMap id="BaseResultMap" type="com.project.model.Comments">
+        <id column="comment_id" jdbcType="BIGINT" property="commentId"/>
+        <result column="post_id" jdbcType="BIGINT" property="postId"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="is_reply" jdbcType="TINYINT" property="isReply"/>
+        <result column="reply_to_comment_id" jdbcType="BIGINT" property="replyToCommentId"/>
+        <result column="reply_to_user_id" jdbcType="BIGINT" property="replyToUserId"/>
+        <result column="reply_count" jdbcType="INTEGER" property="replyCount"/>
+    </resultMap>
+
+    <resultMap id="PostResultMap" type="com.project.model.vo.PostVO">
+        <id property="postId" column="post_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="content" column="content"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <resultMap id="ReplyResultMap" type="com.project.model.vo.ReplyVO">
+        <result property="postId" column="post_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="content" column="content"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <!-- 字段列表 -->
+    <sql id="Base_Column_List">
+        comment_id, post_id, user_id, content, create_time, update_time, is_reply, reply_to_comment_id, reply_to_user_id, reply_count
+    </sql>
+
+    <sql id="Reply_Column_List">
+        post_id, user_id, content, create_time
+    </sql>
+
+    <!-- 查询所有帖子 -->
+    <select id="selectAllPosts" parameterType="com.project.model.dto.QueryPostDTO" resultMap="PostResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        comments
+        <where>
+            <trim prefixOverrides="AND |OR">
+                <if test="userId != null">
+                    AND user_id = #{userId}
+                </if>
+                <if test="startTime != null">
+                    AND create_time &gt;= #{startTime}
+                </if>
+                <if test="endTime != null">
+                    AND create_time &lt;= #{endTime}
+                </if>
+            </trim>
+        </where>
+    </select>
+
+    <!-- 根据帖子 ID 获取帖子 -->
+    <select id="getPostById" parameterType="java.lang.Long" resultMap="PostResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        comments
+        WHERE
+        post_id = #{postId}
+    </select>
+
+    <!-- 根据帖子 ID 获取帖子的回复列表 -->
+    <select id="getRepliesByPostId" parameterType="java.lang.Long" resultMap="ReplyResultMap">
+        SELECT
+        <include refid="Reply_Column_List"/>
+        FROM
+        comments
+        WHERE
+        post_id = #{postId}
+    </select>
+
+    <!-- 根据评论 ID 获取评论 -->
+    <select id="getCommentById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        comment_id, post_id, user_id, content, create_time
+        FROM
+        post_comments
+        WHERE
+        comment_id = #{commentId}
+    </select>
+
+    <!-- 插入评论 -->
+    <insert id="insertComment" parameterType="com.project.model.Comments" useGeneratedKeys="true" keyProperty="commentId">
+        INSERT INTO post_comments (post_id, user_id, content, create_time)
+        VALUES (#{postId}, #{userId}, #{content}, NOW())
+    </insert>
+
+    <!-- 更新评论 -->
+    <update id="updateComment" parameterType="com.project.model.Comments">
+        UPDATE post_comments
+        SET
+            content = #{content}
+        WHERE
+            comment_id = #{commentId}
+    </update>
+
+    <!-- 删除评论 -->
+    <delete id="deleteComment" parameterType="java.lang.Long">
+        DELETE FROM post_comments
+        WHERE
+            comment_id = #{commentId}
+    </delete>
+
+    <!-- 根据论坛 ID 获取评论列表 -->
+    <select id="getCommentsByPostId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        comment_id, post_id, user_id, content, create_time
+        FROM
+        post_comments
+        WHERE
+        post_id = #{postId}
+    </select>
+
+    <!-- 根据用户 ID 获取评论列表 -->
+    <select id="getCommentsByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        comment_id, post_id, user_id, content, create_time
+        FROM
+        post_comments
+        WHERE
+        user_id = #{userId}
+    </select>
+
+    <!-- 增加回复数 -->
+    <update id="incrementReplyCount" parameterType="java.lang.Long">
+        UPDATE comments
+        SET reply_count = reply_count + 1
+        WHERE comment_id = #{commentId}
+    </update>
+</mapper>

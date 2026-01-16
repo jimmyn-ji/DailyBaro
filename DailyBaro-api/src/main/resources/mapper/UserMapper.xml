@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.project.model.User">
+        <id column="uid" jdbcType="BIGINT" property="uid" />
+        <result column="account" jdbcType="VARCHAR" property="account" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="email" jdbcType="VARCHAR" property="email" />
+        <result column="status" jdbcType="TINYINT" property="status" />
+        <result column="isdelete" jdbcType="TINYINT" property="isdelete" />
+        <result column="energy" jdbcType="INTEGER" property="energy" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        uid, account, password, phone, email, status, isdelete, energy
+    </sql>
+
+    <!-- 查询所有用户(排除管理员) -->
+    <select id="selectAllUsers" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM user
+        WHERE isdelete = 0
+        ORDER BY uid ASC
+    </select>
+
+    <!-- 查询个人信息 -->
+    <select id="getMyInfo" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM user
+        WHERE uid = #{uid} AND isdelete = 0
+    </select>
+
+    <!-- 根据账号查询用户 -->
+    <select id="selectByAccount" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM user
+        WHERE account = #{account}
+    </select>
+
+    <!-- 插入新用户 -->
+    <insert id="insertUser" parameterType="com.project.model.User" useGeneratedKeys="true" keyProperty="uid">
+        INSERT INTO user
+            (account, password, phone, email, status, isdelete)
+        VALUES
+            (#{account}, #{password}, #{phone}, #{email}, #{status}, #{isdelete})
+    </insert>
+
+    <!-- 修改用户信息 -->
+    <update id="updateUserInfo" parameterType="com.project.model.User">
+        UPDATE user
+        SET account = #{account},
+            password = #{password},
+            phone = #{phone},
+            email = #{email},
+            status = #{status},
+            isdelete = #{isdelete}
+        WHERE uid = #{uid}
+    </update>
+
+
+    <!-- 修改用户密码 -->
+    <update id="updateUserPassword" parameterType="java.lang.Object">
+        UPDATE user
+        SET password = #{newPassword}
+        WHERE uid = #{uid}
+    </update>
+</mapper>
