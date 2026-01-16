@@ -1,0 +1,47 @@
+# Python缓存文件
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# 虚拟环境
+venv/
+env/
+ENV/
+
+# IDE文件
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 日志文件
+*.log
+
+# 临时文件
+*.tmp
+*.temp
+
+# Git文件
+.git/
+.gitignore
+
+# 模型缓存（如果太大）
+models/
+*.pkl
+*.h5
+*.pt
+*.pth
+
+# 测试文件
+test_*.py
+*_test.py
+
+# 文档
+*.md
+docs/
+
+# 其他大文件
+*.tar.gz
+*.zip
+*.rar

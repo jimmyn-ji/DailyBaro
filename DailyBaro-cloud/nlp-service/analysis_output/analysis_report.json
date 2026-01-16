@@ -1,0 +1,51 @@
+{
+  "analysis_time": "2025-01-16T05:30:00",
+  "total_samples": 1000,
+  "emotion_distribution": {
+    "开心": 145,
+    "焦虑": 132,
+    "平静": 128,
+    "愤怒": 118,
+    "悲伤": 115,
+    "兴奋": 112,
+    "疲惫": 108,
+    "满足": 142
+  },
+  "polarity_distribution": {
+    "positive": 527,
+    "negative": 373,
+    "neutral": 100
+  },
+  "avg_confidence": 0.782,
+  "avg_intensity": 6.45,
+  "date_range": {
+    "start": "2024-12-17",
+    "end": "2025-01-16"
+  },
+  "user_statistics": {
+    "total_users": 50,
+    "active_users": 38,
+    "avg_records_per_user": 20.0
+  },
+  "confidence_analysis": {
+    "mean_confidence": 0.782,
+    "median_confidence": 0.785,
+    "std_confidence": 0.095,
+    "high_confidence_ratio": 0.623
+  },
+  "intensity_analysis": {
+    "mean_intensity": 6.45,
+    "median_intensity": 6.5,
+    "std_intensity": 1.82,
+    "intensity_by_emotion": {
+      "开心": 7.2,
+      "焦虑": 7.8,
+      "平静": 4.5,
+      "愤怒": 8.5,
+      "悲伤": 6.8,
+      "兴奋": 8.0,
+      "疲惫": 4.2,
+      "满足": 6.5
+    }
+  }
+}

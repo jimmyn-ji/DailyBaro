@@ -1,0 +1,100 @@
+server:
+  port: 8001
+
+spring:
+  application:
+    name: user-service
+  cloud:
+    nacos:
+      discovery:
+        enabled: false
+        server-addr: localhost:8848
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dailybaro?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: ${MYSQL_PASSWORD:your_mysql_password}
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.dailybaro.user.model
+  global-config:
+    db-config:
+      logic-delete-field: isdelete
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+wx:
+  appId: ${WECHAT_APP_ID:your_wechat_app_id}
+  appSecret: ${WECHAT_APP_SECRET:your_wechat_app_secret}
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      database: 0
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-wait: -1ms
+          max-idle: 8
+          min-idle: 0
+
+  mail:
+    host: ${EMAIL_HOST:smtp.qq.com}
+    port: ${EMAIL_PORT:587}
+    username: ${EMAIL_USERNAME:your_email@qq.com}
+    password: ${EMAIL_PASSWORD:your_email_password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 15000
+          timeout: 60000
+          writetimeout: 60000
+
+email:
+  mock:
+    enabled: ${EMAIL_MOCK_ENABLED:false}
+
+oauth:
+  wechat:
+    app-id: ${WECHAT_APP_ID:your-wechat-app-id}
+    app-secret: ${WECHAT_APP_SECRET:your-wechat-app-secret}
+    redirect-uri: http://localhost:3000/auth/wechat/callback
+  qq:
+    app-id: ${QQ_APP_ID:your-qq-app-id}
+    app-key: ${QQ_APP_KEY:your-qq-app-key}
+    redirect-uri: http://localhost:3000/auth/qq/callback
+  weibo:
+    app-key: ${WEIBO_APP_KEY:your-weibo-app-key}
+    app-secret: ${WEIBO_APP_SECRET:your-weibo-app-secret}
+    redirect-uri: http://localhost:3000/auth/weibo/callback
+
+jwt:
+  secret: dailybaro-jwt-secret-key-2024
+  expiration: 86400000
+  refresh-expiration: 604800000
+
+verification:
+  email:
+    code-length: 6
+    expiration: 300
+    max-attempts: 5
+    cooldown: 60
+
+logging:
+  level:
+    com.dailybaro.user: debug 
+    com.dailybaro.user.auth: debug 

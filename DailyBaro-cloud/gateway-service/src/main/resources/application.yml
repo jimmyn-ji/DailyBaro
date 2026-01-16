@@ -1,0 +1,138 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: gateway-service
+  main:
+    web-application-type: reactive
+  codec:
+    max-in-memory-size: 200MB
+  cloud:
+    gateway:
+      httpclient:
+        max-in-memory-size: 209715200
+        connect-timeout: 30000
+        response-timeout: 120s
+      routes:
+        # app-service 路由放在最前面，确保 /app/** 优先匹配
+        - id: app-service
+          uri: http://localhost:8012
+          predicates:
+            - Path=/app/**
+        - id: user-service
+          uri: http://localhost:8001
+          predicates:
+            - Path=/api/user/**
+        - id: user-users
+          uri: http://localhost:8001
+          predicates:
+            - Path=/users/**
+        - id: user-login
+          uri: http://localhost:8001
+          predicates:
+            - Path=/login/**
+        - id: user-login-api
+          uri: http://localhost:8001
+          predicates:
+            - Path=/api/login/**
+          filters:
+            - RewritePath=/api/login/(?<path>.*), /login/$\{path}
+        - id: content-service-diary
+          uri: http://localhost:8011
+          predicates:
+            - Path=/api/diary/**
+        - id: content-service-tag
+          uri: http://localhost:8011
+          predicates:
+            - Path=/api/tag/**
+        - id: file-service-uploads
+          uri: http://localhost:8003
+          predicates:
+            - Path=/uploads/**
+        - id: file-service-api-uploads
+          uri: http://localhost:8003
+          predicates:
+            - Path=/api/uploads/**
+          filters:
+            - RewritePath=/api/uploads/(?<path>.*), /uploads/$\{path}
+        - id: file-service-api
+          uri: http://localhost:8003
+          predicates:
+            - Path=/api/file/**
+        - id: content-service-emotion
+          uri: http://localhost:8011
+          predicates:
+            - Path=/api/emotion/**
+        - id: content-service-analysis
+          uri: http://localhost:8011
+          predicates:
+            - Path=/api/analysis/**
+        - id: nlp-service
+          uri: http://localhost:5001
+          predicates:
+            - Path=/api/nlp/**
+        - id: content-service-anonymous
+          uri: http://localhost:8011
+          predicates:
+            - Path=/api/anonymous/**
+        - id: ai-knowledge-service-ai
+          uri: http://localhost:8013
+          predicates:
+            - Path=/api/ai/**
+        - id: auth-service
+          uri: http://localhost:8001
+          predicates:
+            - Path=/api/auth/**
+        - id: friend-service
+          uri: http://localhost:8013
+          predicates:
+            - Path=/api/friend/**
+        - id: content-service-quotes
+          uri: http://localhost:8011
+          predicates:
+            - Path=/api/quotes/**
+        - id: content-service-mysterybox
+          uri: http://localhost:8011
+          predicates:
+            - Path=/api/mysterybox/**
+        - id: content-service-anonymous-posts
+          uri: http://localhost:8011
+          predicates:
+            - Path=/api/anonymous-posts/**
+        - id: content-service-mystery-box
+          uri: http://localhost:8011
+          predicates:
+            - Path=/api/mystery-box/**
+        - id: content-service-capsules
+          uri: http://localhost:8011
+          predicates:
+            - Path=/api/capsules/**
+        # 推荐服务路由必须放在 knowledge-service 之前，因为路径更具体
+        - id: ai-knowledge-service-recommendation
+          uri: http://localhost:8013
+          predicates:
+            - Path=/api/knowledge/recommendation/**
+        - id: ai-knowledge-service-knowledge
+          uri: http://localhost:8013
+          predicates:
+            - Path=/api/knowledge/**
+        # 兼容旧的推荐接口路径
+        - id: recommendations-api
+          uri: http://localhost:8012
+          predicates:
+            - Path=/api/recommendations
+          filters:
+            - RewritePath=/api/recommendations, /app/recommendations
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOriginPatterns: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.web.reactive: DEBUG 
