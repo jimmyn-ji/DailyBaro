@@ -59,6 +59,10 @@ uploads/
 # 音乐文件目录
 音乐文件/
 
+# 部署相关目录（不上传到 GitHub）
+nginx/
+monitoring/
+
 # 数据库
 *.db
 *.sqlite

@@ -111,7 +111,6 @@ DailyBaro 是一个基于 Spring Cloud 微服务架构的智能情绪管理平�
 
 1. **编译项目**:
    ```bash
-   cd DailyBaro-cloud
    mvn clean package -DskipTests
    ```
 
@@ -123,7 +122,6 @@ DailyBaro 是一个基于 Spring Cloud 微服务架构的智能情绪管理平�
 3. **启动服务**:
    ```bash
    # 使用 Docker Compose 启动所有服务（包括 Milvus）
-   cd DailyBaro-cloud
    docker-compose up -d
    
    # 或手动启动各个服务
@@ -138,7 +136,7 @@ DailyBaro 是一个基于 Spring Cloud 微服务架构的智能情绪管理平�
 ## 项目结构
 
 ```
-DailyBaro-cloud/              # 后端微服务（Spring Cloud）
+DailyBaro/                    # 项目根目录
 ├── common/                   # 公共模块（DTO、VO、工具类）
 ├── gateway-service/          # 网关服务 (8000)
 ├── user-service/             # 用户服务 (8001)
@@ -146,7 +144,9 @@ DailyBaro-cloud/              # 后端微服务（Spring Cloud）
 ├── file-service/             # 文件服务 (8003)
 ├── app-service/              # 小程序网关服务 (8012)
 ├── ai-knowledge-service/    # AI 和知识库服务 (8013)
-└── nlp-service/             # NLP 情绪分析服务 (5001) - Python 服务
+├── nlp-service/             # NLP 情绪分析服务 (5001) - Python 服务
+├── pom.xml                   # Maven 父 POM
+└── docker-compose.yml        # Docker Compose 配置
 ```
 
 ## 开发亮点
