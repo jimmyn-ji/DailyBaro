@@ -62,6 +62,16 @@ uploads/
 # 部署相关目录（不上传到 GitHub）
 nginx/
 monitoring/
+file-service/
+
+# 本地路径和配置
+*.local
+*local*
+**/local/**
+**/logs/**
+**/target/**
+**/.idea/**
+**/.vscode/**
 
 # 数据库
 *.db
