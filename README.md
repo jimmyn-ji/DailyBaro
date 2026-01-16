@@ -1,6 +1,6 @@
 # DailyBaro
 
-DailyBaro - 智能情绪健康管理系统
+DailyBaro - 智能情绪健康管理系统（Spring Cloud 微服务架构）
 
 ## 项目概述
 
@@ -9,7 +9,6 @@ DailyBaro 是一个基于 SpringCloud 微服务架构的智能情绪管理平台
 ## 技术架构
 
 - **后端**: SpringCloud + Nacos 服务治理 + MySQL + Redis 缓存
-- **前端**: Vue3 + ECharts 可视化 + WebSocket 实时通信
 - **AI模块**: BERT 文本情绪分析 + Librosa 语音情绪识别
 - **向量数据库**: Milvus (用于 RAG 知识库检索)
 
@@ -27,7 +26,7 @@ DailyBaro 是一个基于 SpringCloud 微服务架构的智能情绪管理平台
 
 ## 快速开始
 
-### 环境要求
+#### 环境要求
 
 - JDK 17+
 - Maven 3.6+
@@ -36,19 +35,18 @@ DailyBaro 是一个基于 SpringCloud 微服务架构的智能情绪管理平台
 - Python 3.8+ (用于 NLP 服务)
 - Docker & Docker Compose (用于 Milvus)
 
-### 配置说明
+#### 配置说明
 
-1. 复制环境变量模板：
+1. 配置数据库：
    ```bash
-   cp env.example .env
+   # 创建数据库
+   mysql -uroot -p < sql/dailybaro_init.sql
    ```
 
-2. 编辑 `.env` 文件，填入实际配置值：
-   - 服务器信息
-   - MySQL 密码
-   - DeepSeek API Key
-   - 微信小程序 AppID 和 AppSecret
-   - 邮箱配置
+2. 配置各服务的 `application.yml`：
+   - 数据库连接信息（使用环境变量 `${MYSQL_PASSWORD:your_mysql_password}`）
+   - Redis 连接信息
+   - API Key 等（通过环境变量配置，如 `${DEEPSEEK_API_KEY:your_deepseek_api_key}`）
 
 3. 编译项目：
    ```bash
@@ -65,24 +63,11 @@ DailyBaro 是一个基于 SpringCloud 微服务架构的智能情绪管理平台
    # 或手动启动各个服务
    java -jar gateway-service/target/gateway-service-1.0-SNAPSHOT.jar
    java -jar user-service/target/user-service-1.0-SNAPSHOT.jar
-   # ... 其他服务
+   java -jar content-service/target/content-service-1.0-SNAPSHOT.jar
+   java -jar file-service/target/file-service-1.0-SNAPSHOT.jar
+   java -jar app-service/target/app-service-1.0-SNAPSHOT.jar
+   java -jar ai-knowledge-service/target/ai-knowledge-service-1.0-SNAPSHOT.jar
    ```
-
-### 一键部署到服务器
-
-```bash
-cd /Users/minchi/Desktop/DailyBaro
-./deploy-to-server.sh
-```
-
-部署脚本会自动：
-- 安装 JDK、MySQL、Redis、Docker、Nginx 等依赖
-- 配置防火墙
-- 部署 Milvus 向量数据库
-- 编译并上传所有服务
-- 配置 Nginx 反向代理
-- 安装 SSL 证书
-- 启动所有服务
 
 ## 项目结构
 
@@ -119,9 +104,12 @@ DailyBaro-cloud/              # 后端微服务（Spring Cloud）
 
 ## 安全说明
 
-⚠️ **重要**: 所有敏感信息（API Key、密码等）已从代码中移除，请通过环境变量或 `.env` 文件配置。
+⚠️ **重要**: 所有敏感信息（API Key、密码等）已从代码中移除，请通过环境变量配置。
 
-`.env` 文件已加入 `.gitignore`，不会被提交到 Git 仓库。
+配置文件使用环境变量占位符，例如：
+- `${MYSQL_PASSWORD:your_mysql_password}`
+- `${DEEPSEEK_API_KEY:your_deepseek_api_key}`
+- `${WECHAT_APP_ID:your_wechat_app_id}`
 
 ## License
 
@@ -130,7 +118,3 @@ MIT License
 ## 贡献
 
 欢迎提交 Issue 和 Pull Request！
-
-## 联系方式
-
-如有问题，请提交 Issue。
